@@ -8,7 +8,7 @@
     </header>
     <main>
       <el-row>
-        <el-button type="primary">新增</el-button>
+        <el-button type="primary" @click="addActivity">新增</el-button>
       </el-row>
       <el-row>
         <el-table :data="tableData" style="width: 100%" stripe>
@@ -32,17 +32,17 @@
             <el-table-column label="报名表单" align="center">
               <template slot-scope="scope">
                 <el-button size="mini">修改</el-button>
-                <el-button size="mini" type="primary">预览</el-button>
+                <el-button size="mini" type="primary" @click="previewForm">预览</el-button>
               </template>
             </el-table-column>
             <el-table-column label="海报设计" align="center">
               <template slot-scope="scope">
                 <div v-if="scope.row.posterStatus == 0">
-                  <el-button size="mini">海报设计</el-button>
+                  <el-button size="mini" @click="addPoster">海报设计</el-button>
                 </div>
                 <div v-else-if="scope.row.posterStatus == 1">
                   <el-button size="mini">修改</el-button>
-                  <el-button size="mini" type="primary">预览</el-button>
+                  <el-button size="mini" type="primary" @click="previewPoster">预览</el-button>
                 </div>
                 <div v-else></div>
               </template>
@@ -51,6 +51,7 @@
               <template slot-scope="scope">
                 <el-button size="mini" type="danger">删除</el-button>
                 <el-button size="mini" type="success" v-if="scope.row.activityStatus == 1">上线</el-button>
+                <el-button size="mini" type="success" v-if="scope.row.activityStatus == 2">下线</el-button>
               </template>
             </el-table-column>
           </el-table-column>
@@ -125,6 +126,18 @@ export default {
                 return "海报已设计";
             }
         },
+        addActivity() {
+          this.$router.push({ name: 'formdesign'})
+        },
+        addPoster() {
+          this.$router.push({ name: 'posterdesign'})
+        },
+        previewForm() {
+          this.$router.push({ name: 'form'})
+        },
+        previewPoster() {
+          this.$router.push({ name: 'poster'})
+        }
     }
 };
 </script>
