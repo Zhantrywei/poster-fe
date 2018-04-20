@@ -2,13 +2,13 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 //组件导入
-import Main from '../components/Main.vue'
-import Activity from '../components/Activity.vue'
-import User from '../components/User.vue'
-import FormDesign from '../components/FormDesign.vue'
-import PosterDesign from '../components/PosterDesign.vue'
-import Form from '../components/Form.vue'
-import Poster from '../components/Poster.vue'
+import Main from '../pages/Main.vue'
+import Form from '../pages/Form.vue'
+import Poster from '../pages/Poster.vue'
+import FormDesign from '../pages/FormDesign.vue'
+import PosterDesign from '../pages/PosterDesign.vue'
+import Activity from '../pages/index/Activity.vue'
+import User from '../pages/index/User.vue'
 
 Vue.use(Router)
 
