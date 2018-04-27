@@ -40,7 +40,7 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
       "startTime": "20180430",
       "endTime": "20180502",
       "activityStatus": 0,
-      "posterDesign": false,
+      "posterDesignStatus": false,
       "form": {
         "bgImgUrl": "url", //一个image url字符串,作报名表单背景图片
         "formName": {

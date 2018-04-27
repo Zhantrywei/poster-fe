@@ -6,6 +6,9 @@
 .form {
     width: 100%;
     height: 100%;
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-size: cover;
 }
 </style>
 <script>
@@ -123,7 +126,7 @@ export default {
         };
     },
     components: {
-        Preview
+        
     },
     methods: {},
     mounted() {}

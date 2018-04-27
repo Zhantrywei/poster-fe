@@ -7,7 +7,9 @@ import App from './App'
 import router from './router'
 import 'normalize.css'
 import Icon from 'vue-awesome/components/Icon'
+import VueFormGenerator from 'vue-form-generator'
 
+Vue.use(VueFormGenerator)
 Vue.use(ElementUI)
 Vue.component('icon', Icon)
 Vue.config.productionTip = false

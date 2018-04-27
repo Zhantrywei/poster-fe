@@ -3,11 +3,11 @@
     <header>报名表单设计</header>
     <div class="left">
       <div class="main">
-        <preview></preview>
+        <form-preview></form-preview>
       </div>
     </div>
     <div class="right">
-      <tools-bar></tools-bar>
+      <form-tools-bar></form-tools-bar>
     </div>
   </div>
 </template>
@@ -57,15 +57,15 @@
 }
 </style>
 <script>
-import Preview from "../components/Preview";
-import ToolsBar from "../components/Toolsbar";
+import FormPreview from "../components/FormPreview";
+import FormToolsBar from "../components/FormToolsbar";
 export default {
     data() {
         return {};
     },
     components: {
-        ToolsBar,
-        Preview
+        FormPreview,
+        FormToolsBar
     },
     methods: {}
 };

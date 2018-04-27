@@ -32,10 +32,13 @@
   background-color: lightgreen;
   
 }
-.main main {
+.main > main {
   float: right;
   width: calc(100% - 200px);
   height: calc(100% - 100px);
   background-color: lightcoral;
+  padding: 10px;
+  box-sizing: border-box;
+  overflow-y: auto;
 }
 </style>

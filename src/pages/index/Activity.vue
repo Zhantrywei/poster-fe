@@ -11,7 +11,7 @@
         <el-button type="primary" @click="addActivity">新增</el-button>
       </el-row>
       <el-row>
-        <el-table :data="tableData" style="width: 100%" stripe>
+        <el-table :data="tableData" style="width: 100%;" height="700" stripe>
           <el-table-column label="序号" type="index" align="center">
           </el-table-column>
           <el-table-column label="活动名称" align="center">
@@ -60,7 +60,15 @@
     </main>
   </div>
 </template>
-<style>
+<style scoped>
+header {
+  height: 20px;
+  line-height: 20px;
+}
+
+.el-row {
+  margin: 10px;
+}
 
 </style>
 <script>
@@ -90,6 +98,138 @@ export default {
                     activityTime: "2018-09-24",
                     activityName: "中秋活动",
                     activityStatus: 1,
+                    posterStatus: 1
+                },
+                {
+                    activityTime: "2018-06-18",
+                    activityName: "端午活动",
+                    activityStatus: 2,
+                    posterStatus: 1
+                },
+                {
+                    activityTime: "2018-06-18",
+                    activityName: "端午活动",
+                    activityStatus: 2,
+                    posterStatus: 1
+                },
+                {
+                    activityTime: "2018-06-18",
+                    activityName: "端午活动",
+                    activityStatus: 2,
+                    posterStatus: 1
+                },
+                {
+                    activityTime: "2018-06-18",
+                    activityName: "端午活动",
+                    activityStatus: 2,
+                    posterStatus: 1
+                },
+                {
+                    activityTime: "2018-06-18",
+                    activityName: "端午活动",
+                    activityStatus: 2,
+                    posterStatus: 1
+                },
+                {
+                    activityTime: "2018-06-18",
+                    activityName: "端午活动",
+                    activityStatus: 2,
+                    posterStatus: 1
+                },
+                {
+                    activityTime: "2018-06-18",
+                    activityName: "端午活动",
+                    activityStatus: 2,
+                    posterStatus: 1
+                },
+                {
+                    activityTime: "2018-06-18",
+                    activityName: "端午活动",
+                    activityStatus: 2,
+                    posterStatus: 1
+                },
+                {
+                    activityTime: "2018-06-18",
+                    activityName: "端午活动",
+                    activityStatus: 2,
+                    posterStatus: 1
+                },
+                {
+                    activityTime: "2018-06-18",
+                    activityName: "端午活动",
+                    activityStatus: 2,
+                    posterStatus: 1
+                },
+                {
+                    activityTime: "2018-06-18",
+                    activityName: "端午活动",
+                    activityStatus: 2,
+                    posterStatus: 1
+                },
+                {
+                    activityTime: "2018-06-18",
+                    activityName: "端午活动",
+                    activityStatus: 2,
+                    posterStatus: 1
+                },
+                {
+                    activityTime: "2018-06-18",
+                    activityName: "端午活动",
+                    activityStatus: 2,
+                    posterStatus: 1
+                },
+                {
+                    activityTime: "2018-06-18",
+                    activityName: "端午活动",
+                    activityStatus: 2,
+                    posterStatus: 1
+                },
+                {
+                    activityTime: "2018-06-18",
+                    activityName: "端午活动",
+                    activityStatus: 2,
+                    posterStatus: 1
+                },
+                {
+                    activityTime: "2018-06-18",
+                    activityName: "端午活动",
+                    activityStatus: 2,
+                    posterStatus: 1
+                },
+                {
+                    activityTime: "2018-06-18",
+                    activityName: "端午活动",
+                    activityStatus: 2,
+                    posterStatus: 1
+                },
+                {
+                    activityTime: "2018-06-18",
+                    activityName: "端午活动",
+                    activityStatus: 2,
+                    posterStatus: 1
+                },
+                {
+                    activityTime: "2018-06-18",
+                    activityName: "端午活动",
+                    activityStatus: 2,
+                    posterStatus: 1
+                },
+                {
+                    activityTime: "2018-06-18",
+                    activityName: "端午活动",
+                    activityStatus: 2,
+                    posterStatus: 1
+                },
+                {
+                    activityTime: "2018-06-18",
+                    activityName: "端午活动",
+                    activityStatus: 2,
+                    posterStatus: 1
+                },
+                {
+                    activityTime: "2018-06-18",
+                    activityName: "端午活动",
+                    activityStatus: 2,
                     posterStatus: 1
                 },
                 {
