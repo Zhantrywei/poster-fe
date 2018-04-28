@@ -4,7 +4,7 @@
         <form-title-text :form-text="formTitle"  v-else></form-title-text>
         <form-desc-text :form-desc-text="formDesc" v-if="formDesc.type == 'text'"></form-desc-text>
         <form-desc-img :form-desc-img="formDesc" v-else></form-desc-img>
-        <form-border-img :form-border-img="formBorderImg"></form-border-img>
+        <form-content :form-content="formContent"></form-content>
     </div>
 </template>
 <style scoped>
@@ -32,7 +32,7 @@ import FormTitleImg from "./FormTitleImg";
 import FormTitleText from "./FormTitleText";
 import FormDescImg from "./FormDescImg";
 import FormDescText from "./FormDescText";
-import FormBorderImg from "./FormBorderImg";
+import FormContent from "./FormContent";
 import Bus from "@/assets/js/bus";
 export default {
   name: "preview",
@@ -67,8 +67,7 @@ export default {
         y: 80,
         angle: 30
       },
-      formBorderImg: {
-        type: "img",
+      formContent: {
         content: "",
         fontFamily: "黑体",
         fontSize: 32,
@@ -77,7 +76,11 @@ export default {
         height: null,
         x: 50,
         y: 80,
-        angle: 0
+        angle: 0,
+        paddingTop: 0,
+        paddingBottom: 0,
+        paddingLeft: 0,
+        paddingRight: 0
       }
     };
   },
@@ -86,7 +89,7 @@ export default {
     FormTitleText,
     FormDescImg,
     FormDescText,
-    FormBorderImg
+    FormContent
   },
   methods: {},
   beforeMount() {
@@ -103,8 +106,8 @@ export default {
           .replace(/ /g, "&nbsp;");
       }
     });
-    //getFormBorderImg事件是在Formtoolsbar触发的
-    Bus.$on("getFormBorderImg", msg => (this.formBorderImg = msg));
+    //getFormContent事件是在Formtoolsbar触发的
+    Bus.$on("getFormContent", msg => (this.formContent = msg));
   }
 };
 </script>

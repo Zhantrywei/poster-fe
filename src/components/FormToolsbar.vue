@@ -178,83 +178,124 @@
           </el-form-item>
         </el-form>
       </el-collapse-item>
-      <!-- 表单图片框双向通信 -->
-      <el-collapse-item title="表单图片框设计" name="5">
-        <el-form :model="formBorderImg" label-width="80px">   
-          <el-form-item label="框图片">
+      <!-- 表单图片双向通信 -->
+      <el-collapse-item title="表单基础设计" name="5">
+        <el-form :model="formContent" label-width="80px">   
+          <el-form-item label="表单图片">
             <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" list-type="picture" :limit="1">
               <el-button size="small" type="primary">点击上传</el-button>
               <span style="margin-left: 10px;" slot="tip" class="el-upload__tip">建议上传png文件，且不超过500kb</span>
             </el-upload>
           </el-form-item>
-          <el-form-item label="图片大小">
+          <el-form-item label="表单大小">
             <div style="margin-top: 40px;">
               <span style="margin-right: 10px">宽</span>
-              <el-input v-model="formBorderImg.width" style="width: 50%;" type="number"  @change="sendFormBorderImg">
+              <el-input v-model="formContent.width" style="width: 50%;" type="number"  @change="sendFormContent">
                 <template slot="append">px</template>
               </el-input>
             </div>
             <div style="margin-top: 40px;">
               <span style="margin-right: 10px">高</span>
-              <el-input v-model="formBorderImg.height" style="width: 50%;" type="number" @change="sendFormBorderImg">
+              <el-input v-model="formContent.height" style="width: 50%;" type="number" @change="sendFormContent">
                 <template slot="append">px</template>
               </el-input>
             </div>
           </el-form-item>
-          <el-form-item label="图片位置">
+          <el-form-item label="表单位置">
             <div style="margin-top: 40px;">
               <span style="margin-right: 10px">左边距 ( x )</span>
-              <el-input v-model="formBorderImg.x" style="width: 50%;" type="number" @blur="sendFormBorderImg">
+              <el-input v-model="formContent.x" style="width: 50%;" type="number" @blur="sendFormContent">
                 <template slot="append">px</template>
               </el-input>
             </div>
             <div style="margin-top: 40px;">
               <span style="margin-right: 10px">上边距 ( y )</span>
-              <el-input v-model="formBorderImg.y" style="width: 50%;" type="number" @blur="sendFormBorderImg">
+              <el-input v-model="formContent.y" style="width: 50%;" type="number" @blur="sendFormContent">
                 <template slot="append">px</template>
               </el-input>
             </div>
           </el-form-item>   
-          <el-form-item label="图片旋转" style="margin-bottom: 0px">
-            <el-slider v-model="formBorderImg.angle" :min="0" :max="360"  @change="sendFormBorderImg">
+          <el-form-item label="表单旋转" style="margin-bottom: 0px">
+            <el-slider v-model="formContent.angle" :min="0" :max="360"  @change="sendFormContent">
             </el-slider>
+          </el-form-item>
+          <el-form-item label="内边距">
+            <div style="margin-top: 40px;">
+              <span style="margin-right: 10px">左内边距</span>
+              <el-input v-model="formContent.paddingLeft" style="width: 50%;" type="number" @blur="sendFormContent">
+                <template slot="append">px</template>
+              </el-input>
+            </div>
+            <div style="margin-top: 40px;">
+              <span style="margin-right: 10px">右内边距</span>
+              <el-input v-model="formContent.paddingRight" style="width: 50%;" type="number" @blur="sendFormContent">
+                <template slot="append">px</template>
+              </el-input>
+            </div>
+            <div style="margin-top: 40px;">
+              <span style="margin-right: 10px">上内边距</span>
+              <el-input v-model="formContent.paddingTop" style="width: 50%;" type="number" @blur="sendFormContent">
+                <template slot="append">px</template>
+              </el-input>
+            </div>
+            <div style="margin-top: 40px;">
+              <span style="margin-right: 10px">下内边距</span>
+              <el-input v-model="formContent.paddingBottom" style="width: 50%;" type="number" @blur="sendFormContent">
+                <template slot="append">px</template>
+              </el-input>
+            </div>
+          </el-form-item>
+          <el-form-item label="表单字体">
+            <el-select v-model="formContent.fontFamily" clearable placeholder="请选择" @change="sendFormContent">
+              <el-option v-for="item in fontOptions" :key="item.value" :label="item.label" :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="字体大小">
+            <el-input v-model="formContent.fontSize" type="number" min="12" max="80" @change="sendFormContent">
+              <template slot="append">px</template>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="字体颜色">
+            <el-color-picker v-model="formContent.fontColor" :predefine="preFontColors" @active-change="sendFormContent" @change="sendFormContent">
+            </el-color-picker>
+          </el-form-item>
+          <el-form-item label="每行高度">
+            <el-input v-model="formContent.lineHeight" style="width: 50%;" type="number" @change="sendFormContent">
+                <template slot="append">px</template>
+              </el-input>
           </el-form-item>
         </el-form>
       </el-collapse-item>
       <el-collapse-item title="表单内容控件设计" name="6">
+        <el-form :model="formComponent" label-width="80px">
+          <!-- 控件ID = model、id、name -->
+          <el-form-item label="控件ID">
+            <el-input v-model="formComponent.id" type="text"></el-input>
+          </el-form-item>
+          <el-form-item label="控件类型">
+            <el-select v-model="formComponent.type" clearable placeholder="请选择">
+              <el-option v-for="item in componentType" :key="item.value" :label="item.label" :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="Label">
+            <el-input v-model="formComponent.label" type="text"></el-input>
+          </el-form-item>
+          <!--<el-form-item label="Label宽度">
+            <el-input v-model="formComponent.labelWidth" style="width: 50%;" min="0" type="number">
+              <template slot="append">px</template>
+            </el-input>
+          </el-form-item> -->
+          <el-form-item>
+            <el-button type="primary" @click="addComponent">创建控件</el-button>
+          </el-form-item>
+        </el-form>
+
       </el-collapse-item>
     </el-collapse>
     <!-- <el-form :model="formToolsbar" label-width="80px"> -->
       
-      
-      <!-- 表单内容 -->
-      
-      <!-- <el-form-item label="内边距">
-        <div style="margin-top: 40px;">
-          <span style="margin-right: 10px">左内边距</span>
-          <el-input v-model="formToolsbar.form.formContent.paddingLeft" style="width: 50%;" type="number" @blur="sendFormBorderImg">
-            <template slot="append">px</template>
-          </el-input>
-        </div>
-        <div style="margin-top: 40px;">
-          <span style="margin-right: 10px">右内边距</span>
-          <el-input v-model="formToolsbar.form.formContent.paddingRight" style="width: 50%;" type="number" @blur="sendFormBorderImg">
-            <template slot="append">px</template>
-          </el-input>
-        </div>
-        <div style="margin-top: 40px;">
-          <span style="margin-right: 10px">上内边距</span>
-          <el-input v-model="formToolsbar.form.formContent.paddingTop" style="width: 50%;" type="number" @blur="sendFormBorderImg">
-            <template slot="append">px</template>
-          </el-input>
-        </div>
-        <div style="margin-top: 40px;">
-          <span style="margin-right: 10px">下内边距</span>
-          <el-input v-model="formToolsbar.form.formContent.paddingBottom" style="width: 50%;" type="number" @blur="sendFormBorderImg">
-            <template slot="append">px</template>
-          </el-input>
-        </div>
-      </el-form-item> -->
       <!-- <el-form-item label="单行文本" class="addContent">
         <div style="margin-top: 40px;">
           <span style="margin-right: 10px;display:inline-block;width: 56px;">文本内容</span>
@@ -296,6 +337,9 @@
           <el-button type="primary">添加单选框</el-button>
         </div>
       </el-form-item> -->
+      <div class="componentPre" id="componentPre">
+
+      </div>
   </div>
 </template>
 <style scoped>
@@ -331,6 +375,9 @@ import Bus from "../assets/js/bus";
 import BGImg from "../assets/img/BGimg.jpg";
 import ActivityTitle from "../assets/img/亲子游title.png";
 import FormBGImg from "../assets/img/亲子游表单BG.png";
+import TextCom from "./formComponentEdit/textCom";
+import PasswordCom from "./formComponentEdit/passwordCom";
+import TextareaCom from "./formComponentEdit/textareaCom";
 export default {
   name: "toolsbar",
   data() {
@@ -395,7 +442,7 @@ export default {
           label: "sans-serif"
         }
       ],
-      activeNames: ["1"],
+      activeNames: ["6"],
       //活动基本信息, 不用与预览组件实现数据双向通信
       activityInfo: {
         activityName: "",
@@ -457,19 +504,68 @@ export default {
         // y: 80,
         // angle: 30
       },
-      formBorderImg: {
-        type: "img",
+      formContent: {
         content: FormBGImg,
-        fontFamily: null,
-        fontSize: null,
-        fontColor: null,
+        fontFamily: "微软雅黑",
+        fontSize: 15,
+        fontColor: "#fff",
         width: 280,
         height: 392,
         x: 49,
         y: 145,
-        angle: 0
-      }
+        angle: 0,
+        paddingTop: 60,
+        paddingBottom: 0,
+        paddingLeft: 11,
+        paddingRight: 11,
+        lineHeight: 38
+      },
+      formComponent: {
+        id: "",
+        label: "",
+        type: ""
+      },
+      componentType: [
+        {
+          value: "text",
+          label: "单行文本"
+        },
+        {
+          value: "password",
+          label: "密码框"
+        },
+        {
+          value: "textarea",
+          label: "多行文本"
+        },
+        {
+          value: "radio",
+          label: "单选框"
+        },
+        {
+          value: "checkbox",
+          label: "多选框"
+        },
+        {
+          value: "select",
+          label: "下拉框"
+        },
+        {
+          value: "upload",
+          label: "图片上传"
+        },
+        {
+          value: "submit",
+          label: "提交按钮"
+        }
+      ],
+      componentContent: [],
     };
+  },
+  components: {
+    TextCom,
+    TextareaCom,
+    PasswordCom
   },
   watch: {},
   methods: {
@@ -507,22 +603,27 @@ export default {
       this.formDesc.content = imgUrl;
       this.sendFormDesc();
     },
-    //设置FormBorderImg信息
-    sendFormBorderImg() {
-      var msg = JSON.parse(JSON.stringify(this.formBorderImg));
-      Bus.$emit("getFormBorderImg", msg); //触发getFormBorderImg事件,这个在FormPreview.vue里面
+    //设置FormContent信息
+    sendFormContent() {
+      var msg = JSON.parse(JSON.stringify(this.formContent));
+      Bus.$emit("getFormContent", msg); //触发getFormContent事件,这个在FormPreview.vue里面
     },
     //设置FormTitleImg
-    setFormBorderImgImg(imgUrl) {
-      this.formBorderImg.content = imgUrl;
-      this.sendFormBorderImg();
+    setFormContentImg(imgUrl) {
+      this.formContent.content = imgUrl;
+      this.sendFormContent();
+    },
+    //添加控件
+    addComponent() {
+      console.log("添加控件");
+      console.log(this.formComponent);
     }
   },
   mounted() {
     this.sendFormBG();
     this.sendFormTitle();
     this.sendFormDesc();
-    this.sendFormBorderImg();
+    this.sendFormContent();
     Bus.$on("sendFormTitle", msg => {
       this.formTitle.x = msg.x;
       this.formTitle.y = msg.y;
@@ -531,10 +632,10 @@ export default {
       this.formDesc.x = msg.x;
       this.formDesc.y = msg.y;
     });
-    Bus.$on("sendFormBorderImg", msg => {
-      this.formBorderImg.x = msg.x;
-      this.formBorderImg.y = msg.y;
-    })
+    Bus.$on("sendFormContent", msg => {
+      this.formContent.x = msg.x;
+      this.formContent.y = msg.y;
+    });
   }
 };
 </script>
