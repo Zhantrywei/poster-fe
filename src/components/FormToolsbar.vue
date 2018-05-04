@@ -260,11 +260,11 @@
             <el-color-picker v-model="formContent.fontColor" :predefine="preFontColors" @active-change="sendFormContent" @change="sendFormContent">
             </el-color-picker>
           </el-form-item>
-          <el-form-item label="每行高度">
+          <!-- <el-form-item label="每行高度">
             <el-input v-model="formContent.lineHeight" style="width: 50%;" type="number" @change="sendFormContent">
                 <template slot="append">px</template>
               </el-input>
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
       </el-collapse-item>
       <el-collapse-item title="表单内容控件设计" name="6">
@@ -338,7 +338,95 @@
         </div>
       </el-form-item> -->
       <div class="componentPre" id="componentPre">
-
+        <!-- 控件显示 -->
+        <!-- input单项类型的（text,password） -->
+        <div class="inputCom" v-show="inputComShow">
+          <el-form ref="form" :model="inputCom" label-width="80px">
+            <el-form-item label="序号">
+              <span v-text="inputCom.index"></span>
+            </el-form-item>
+            <el-form-item label="类型">
+              <span v-text="inputCom.type"></span>
+            </el-form-item>
+            <el-form-item label="控件ID">
+              <!-- <el-input v-model="inputCom.id" type="text"></el-input> -->
+              <span v-text="inputCom.id"></span>
+            </el-form-item>
+            <el-form-item label="Label">
+              <el-input v-model="inputCom.label" type="text"></el-input>
+            </el-form-item>
+            <el-form-item label="Label宽度">
+              <el-input v-model="inputCom.labelWidth" style="width: 50%;" type="number">
+                <template slot="append">px</template>
+              </el-input>
+            </el-form-item> 
+            <el-form-item label="框高度">
+              <el-input v-model="inputCom.inputHeight" style="width: 50%;" type="number">
+                <template slot="append">px</template>
+              </el-input>
+            </el-form-item>  
+            <el-form-item label="默认值">
+              <el-input v-model="inputCom.value" type="text"></el-input>
+            </el-form-item>
+            <el-form-item label="提示文本">
+              <el-input v-model="inputCom.placeholder" type="text"></el-input>
+            </el-form-item>
+            <el-form-item label="背景颜色">
+              <el-color-picker v-model="inputCom.backgroundColor" show-alpha :predefine="predefineColors">
+              </el-color-picker>
+            </el-form-item>
+            <el-form-item label="边框弧度">
+              <el-input v-model="inputCom.borderRadius" style="width: 50%;" type="number">
+                <template slot="append">px</template>
+              </el-input>
+            </el-form-item>   
+            <el-form-item>
+              <el-button type="success" icon="el-icon-check" circle @click="inputComSubmit(inputCom)"></el-button>
+              <el-button type="danger" icon="el-icon-delete" circle @click="inputComDelete(inputCom)"></el-button>
+              <el-button type="primary" icon="el-icon-arrow-up" circle @click="inputComUp(inputCom)"></el-button>
+              <el-button type="primary" icon="el-icon-arrow-down" circle @click="inputComDown(inputCom)"></el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+        <!-- radio类型 -->
+        <div class="radio" v-show="radioShow">
+<el-form ref="form" :model="radioCom" label-width="80px">
+            <el-form-item label="序号">
+              <span v-text="radioCom.index"></span>
+            </el-form-item>
+            <el-form-item label="类型">
+              <span v-text="radioCom.type"></span>
+            </el-form-item>
+            <el-form-item label="控件ID">
+              <!-- <el-input v-model="radioCom.id" type="text"></el-input> -->
+              <span v-text="radioCom.id"></span>
+            </el-form-item>
+            <el-form-item label="Label">
+              <el-input v-model="radioCom.label" type="text"></el-input>
+            </el-form-item>
+            <el-form-item label="Label宽度">
+              <el-input v-model="radioCom.labelWidth" style="width: 50%;" type="number">
+                <template slot="append">px</template>
+              </el-input>
+            </el-form-item> 
+            <el-form-item label="name">
+              <el-input v-model="radioCom.name" type="text"></el-input>
+            </el-form-item> 
+            <el-form-item label="value">
+              <el-input type="text"></el-input>
+            </el-form-item>
+            <el-form-item label="text">
+              <el-input type="text"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="success" icon="el-icon-check" circle @click="radioComSubmit(radioCom)"></el-button>
+              <el-button type="danger" icon="el-icon-delete" circle @click="radioComDelete(radioCom)"></el-button>
+              <el-button type="primary" icon="el-icon-arrow-up" circle @click="radioComUp(radioCom)"></el-button>
+              <el-button type="primary" icon="el-icon-arrow-down" circle @click="radioComDown(radioCom)"></el-button>
+              <el-button type="primary" icon="el-icon-plus" circle @click="radioComDown(radioCom)"></el-button>
+            </el-form-item>
+          </el-form>
+        </div>
       </div>
   </div>
 </template>
@@ -518,7 +606,7 @@ export default {
         paddingBottom: 0,
         paddingLeft: 11,
         paddingRight: 11,
-        lineHeight: 38
+        lineHeight: '',
       },
       formComponent: {
         id: "",
@@ -560,6 +648,39 @@ export default {
         }
       ],
       componentContent: [],
+      inputComShow: false,
+      inputCom: {
+        // id: "",
+        // label: "",
+        // index: "",
+        // type: "",
+        // value: "",
+        // placeholder: ""
+        index: '',
+        type: "text", //password,text
+        label: "姓名",
+        model: "username",
+        id: "username",
+        value: "",
+        placeholder: "请输入内容",
+        borderRadius: 4,
+        labelWidth: 50,
+        backgroundColor: "#0F5BAA",
+        inputHeight: 30
+      },
+      radioShow: true,
+      radioCom: {
+        id: '',
+        model: '',
+        index: '',
+        label: '',
+        type: 'radio',
+        name: '',
+        values: [
+          // {name: '', value: '', text: ''},
+        ],
+        labelWidth: 50,
+      }
     };
   },
   components: {
@@ -567,7 +688,27 @@ export default {
     TextareaCom,
     PasswordCom
   },
-  watch: {},
+  watch: {
+    'inputCom.index':{
+                handler:(val,oldVal)=>{
+                  console.log("indexVal: ",val);
+                  console.log("indexOldVal: ",oldVal); 
+                  Bus.$emit("getBorderIndex",val);
+                },
+                // 深度观察
+                deep:true
+            },
+    // 'formComponent.type':{
+    //             handler:(val,oldVal)=>{
+    //               console.log("typeVal: ",val);
+    //               if(val == 'text' || val == 'password'){
+    //                 this.inputComShow = true;
+    //               }
+    //             },
+    //             // 深度观察
+    //             deep:true
+    //         }
+  },
   methods: {
     onSubmit() {
       console.log("submit!");
@@ -615,8 +756,190 @@ export default {
     },
     //添加控件
     addComponent() {
-      console.log("添加控件");
-      console.log(this.formComponent);
+      if (
+        this.formComponent.id == null ||
+        this.formComponent.label == null ||
+        this.formComponent.type == null
+      ) {
+        return false;
+      }
+      //先定义不同组件需要的字段
+      //单行文本、密码
+      // var inputCom = {
+      //     index: this.componentContent.length+1,
+      //     id: this.formComponent.id,
+      //     model: this.formComponent.id,
+      //     type: this.formComponent.type,
+      //     label: this.formComponent.label,
+      //     value: '', //默认值
+      //     placeholder: this.formComponent.type=='password'?'请输入密码':'请输入内容'
+      // },
+      //多行文本
+      /* var textareaCom = {
+             index: this.componentContent.length+1,
+             id: this.formComponent.id,
+             model: this.formComponent.id,
+             type: this.formComponent.type,
+             label: this.formComponent.label,
+             value: '', //默认值
+             placeholder: '请输入内容'
+      }
+      */
+      if (
+        this.formComponent.type == "text" ||
+        this.formComponent.type == "password" ||
+        this.formComponent.type == "textarea"
+      ) {
+        var inputCom = {
+          index: this.componentContent.length + 1,
+          id: this.formComponent.id,
+          model: this.formComponent.id,
+          type: this.formComponent.type,
+          label: this.formComponent.label,
+          value: "", //默认值
+          placeholder:
+            this.formComponent.type == "password" ? "请输入密码" : "请输入内容",
+          borderRadius: this.inputCom.borderRadius,
+          labelWidth: this.inputCom.labelWidth,
+          backgroundColor: this.inputCom.backgroundColor,
+          inputHeight: this.inputCom.inputHeight
+        };
+      }
+      if (
+        this.formComponent.type == "text" ||
+        this.formComponent.type == "password" || this.formComponent.type == 'textarea'
+      ) {
+        this.inputCom = inputCom;
+        this.inputComShow = true;
+        this.componentContent.push(inputCom);
+        this.sendComponentContent();
+      }
+      //   {
+      //     value: "textarea",
+      //     label: "多行文本"
+      //   },
+      //   {
+      //     value: "radio",
+      //     label: "单选框"
+      //   },
+      //   {
+      //     value: "checkbox",
+      //     label: "多选框"
+      //   },
+      //   {
+      //     value: "select",
+      //     label: "下拉框"
+      //   },
+      //   {
+      //     value: "upload",
+      //     label: "图片上传"
+      //   },
+      //   {
+      //     value: "submit",
+      //     label: "提交按钮"
+      //   }
+      // var copyItem = {
+      //   id: this.formComponent.id,
+      //   model: this.formComponent.id,
+      //   type: this.formComponent.type,
+      //   label: this.formComponent.label,
+      //   value:
+      // }
+    },
+    //inputCom按钮
+    inputComSubmit(inputCom) {
+      var index = inputCom.index - 1;
+      console.log("inputCom: ", inputCom);
+      this.componentContent[index] = JSON.parse(JSON.stringify(inputCom));
+      console.log("submit component: ", this.componentContent);
+      this.sendComponentContent();
+    },
+    inputComDelete(inputCom) {
+      console.log("inputCom: ", inputCom);
+      var index = inputCom.index - 1;
+      // this.componentContent.splice(index, 1);
+      // 数组截取，拿index前面的数组不变
+      if (index != 0) {
+        var beforeArray = this.componentContent.slice(0, index);
+      }else{
+        var beforeArray = [];
+      }
+      var afterArray = this.componentContent.slice(index + 1);
+      afterArray.forEach(function(item) {
+        item.index--;
+      });
+      this.componentContent = beforeArray.concat(afterArray);
+      console.log("delete: ",this.componentContent);
+      this.sendComponentContent();
+      if (this.componentContent.length == 0) {
+        this.inputComShow = false;
+        this.inputCom = {
+          id: "",
+          label: "",
+          index: "",
+          type: "",
+          value: "",
+          placeholder: "请输入内容",
+          borderRadius: 4,
+          labelWidth: 50,
+          backgroundColor: "#0F5BAA",
+          inputHeight: 30
+        };
+        alert("表单已空");
+      } else {
+        this.inputCom = JSON.parse(
+          JSON.stringify(
+            this.componentContent[this.componentContent.length - 1]
+          )
+        );
+      }
+    },
+    inputComUp(inputCom) {
+      console.log("inputCom: ", inputCom.index);
+      var index = inputCom.index - 1;
+      if (index <= 0) {
+        alert("不能再向上移动了");
+        return false;
+      } else {
+        var beforeIndex = index - 1;
+        var temp = JSON.parse(
+          JSON.stringify(this.componentContent[beforeIndex])
+        );
+        this.componentContent[beforeIndex] = JSON.parse(
+          JSON.stringify(this.componentContent[index])
+        );
+        this.componentContent[index] = temp;
+        console.log("up component: ", this.componentContent);
+        this.inputCom.index -= 1;
+        this.sendComponentContent();
+      }
+    },
+    inputComDown(inputCom) {
+      console.log("inputCom: ", inputCom.index);
+      var index = inputCom.index - 1;
+      if (index + 1 < this.componentContent.length) {
+        var afterIndex = index + 1;
+        var temp = JSON.parse(
+          JSON.stringify(this.componentContent[afterIndex])
+        );
+        this.componentContent[afterIndex] = JSON.parse(
+          JSON.stringify(this.componentContent[index])
+        );
+        this.componentContent[index] = temp;
+        console.log("down component: ", this.componentContent);
+        this.inputCom.index += 1;
+        this.sendComponentContent();
+      } else {
+        alert("不能再向下移动了");
+        return false;
+      }
+    },
+
+    //设置FormContent信息
+    sendComponentContent() {
+      console.log("component: ", this.componentContent);
+      var msg = JSON.parse(JSON.stringify(this.componentContent));
+      Bus.$emit("getComponentContent", msg); //触发getComponentContent事件,这个在FormPreview.vue里面
     }
   },
   mounted() {
@@ -635,6 +958,11 @@ export default {
     Bus.$on("sendFormContent", msg => {
       this.formContent.x = msg.x;
       this.formContent.y = msg.y;
+    });
+    this.sendComponentContent();
+    Bus.$on("getIndex", msg => {
+      console.log("msg: ", msg);
+      this.inputCom = this.componentContent[msg];
     });
   }
 };

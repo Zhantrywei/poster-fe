@@ -11,6 +11,7 @@ import VueFormGenerator from 'vue-form-generator'
 import "vue-form-generator/dist/vfg.css";
 Vue.use(VueFormGenerator)
 window.VueFormGenerator = VueFormGenerator
+Vue.component('vue-form-generator', VueFormGenerator)
 Vue.use(ElementUI)
 Vue.component('icon', Icon)
 Vue.config.productionTip = false
