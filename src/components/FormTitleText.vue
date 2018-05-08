@@ -1,6 +1,6 @@
 <template>
   <div class="form-title-text" id="formTitleText" @mousedown="moveTitle">
-    <h1 :style="{top: formText.y + 'px',left: formText.x + 'px', transform: 'rotate('+ formText.angle + 'deg)', fontFamily: formText.fontFamily, fontSize: formText.fontSize+'px', color: formText.fontColor}">{{formText.content}}</h1>
+    <h1 @dblclick="titleTextDBClick" :style="{top: formText.y + 'px',left: formText.x + 'px', transform: 'rotate('+ formText.angle + 'deg)', fontFamily: formText.fontFamily, fontSize: formText.fontSize+'px', color: formText.fontColor}">{{formText.content}}</h1>
   </div>
 </template>
 <script>
@@ -46,6 +46,10 @@ export default {
         };
         flag = 0;
       }
+    },
+    titleTextDBClick(){
+      var msg = 3;
+      Bus.$emit("getActive",msg);
     }
   },
   mounted() {

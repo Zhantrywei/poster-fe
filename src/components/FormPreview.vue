@@ -1,5 +1,5 @@
 <template>
-    <div class="preview" id="preview" :style="{backgroundImage: 'url('+formBG.bgImgUrl+')', backgroundColor: formBG.bgColor}">
+    <div class="preview" id="preview" :style="{backgroundImage: 'url('+formBG.bgImgUrl+')', backgroundColor: formBG.bgColor}" @dblclick.self="preClick">
         <form-title-img :form-img="formTitle" v-if="formTitle.type == 'img'"></form-title-img>
         <form-title-text :form-text="formTitle"  v-else></form-title-text>
         <form-desc-text :form-desc-text="formDesc" v-if="formDesc.type == 'text'"></form-desc-text>
@@ -91,7 +91,13 @@ export default {
     FormDescText,
     FormContent
   },
-  methods: {},
+  methods: {
+    preClick(){
+      console.log("preClick");
+      var msg = 2;
+      Bus.$emit("getActive",msg);
+    }
+  },
   beforeMount() {
     Bus.$on("getFormData", msg => (this.formData = msg));
     Bus.$on("getFormBG", msg => (this.formBG = msg));

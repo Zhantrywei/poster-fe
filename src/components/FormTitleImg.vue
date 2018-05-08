@@ -1,6 +1,6 @@
 <template>
     <div class="form-title-img" id="formTitleImg">
-        <img @mousedown="moveTitle" :src="formImg.content" :width="formImg.width" :height="formImg.height" :style="{top: formImg.y + 'px',left: formImg.x + 'px', transform: 'rotate('+ formImg.angle + 'deg)'}">
+        <img @dblclick="titleImgDBClick" @mousedown="moveTitle" :src="formImg.content" :width="formImg.width" :height="formImg.height" :style="{top: formImg.y + 'px',left: formImg.x + 'px', transform: 'rotate('+ formImg.angle + 'deg)'}">
     </div>
 </template>
 <style scoped>
@@ -63,6 +63,10 @@ export default {
         };
         flag = 0;
       }
+    },
+    titleImgDBClick(){
+      var msg = 3
+      Bus.$emit("getActive",msg);
     }
   },
   mounted() {

@@ -1,6 +1,6 @@
 <template>
     <div class="form-desc-img clearfix" id="formDescImg">
-        <img :src="formDescImg.content" :width="formDescImg.width" :height="formDescImg.height" :style="{top: formDescImg.y + 'px',left: formDescImg.x + 'px', transform: 'rotate('+ formDescImg.angle + 'deg)'}" @mousedown="moveDesc">
+        <img @dblclick="descImgDBClick" :src="formDescImg.content" :width="formDescImg.width" :height="formDescImg.height" :style="{top: formDescImg.y + 'px',left: formDescImg.x + 'px', transform: 'rotate('+ formDescImg.angle + 'deg)'}" @mousedown="moveDesc">
     </div>
 </template>
 <style scoped>
@@ -63,6 +63,10 @@ export default {
         };
         flag = 0;
       }
+    },
+    descImgDBClick(){
+      var msg = 4;
+      Bus.$emit("getActive",msg);
     }
   },
   mounted() {

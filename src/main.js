@@ -9,6 +9,13 @@ import 'normalize.css'
 import Icon from 'vue-awesome/components/Icon'
 import VueFormGenerator from 'vue-form-generator'
 import "vue-form-generator/dist/vfg.css";
+import axios from 'axios'
+
+// import qs from 'qs'
+
+// Vue.prototype.Qs = qs
+
+Vue.prototype.$http = axios
 Vue.use(VueFormGenerator)
 window.VueFormGenerator = VueFormGenerator
 Vue.component('vue-form-generator', VueFormGenerator)

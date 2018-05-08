@@ -1,6 +1,9 @@
 <template>
   <div id="formdesign" class="formdesign clearfix">
-    <header>报名表单设计</header>
+    <header>
+      <img src="../assets/img/header-logo.png">
+      <h2>表单设计</h2>        
+    </header>
     <div class="left">
       <div class="main">
         <form-preview></form-preview>
@@ -19,14 +22,29 @@
     background: #e8e8e8;
 }
 .formdesign header {
-    width: 100%;
-    height: 100px;
-    background-color: lightblue;
+  width: 100%;
+  height: 100px;
+  background-color: #1BC7D5;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0 50px;
+}
+.formdesign > header > img {
+  height: 74.67532467532468px;
+}
+.formdesign > header > h2 {
+  font-size: 42px;
+  font-weight: 200;
+  color: white;
+  font-family: '微软雅黑'
 }
 .left {
     float: left;
     /* width: 80%; */
-    width: calc(100% - 440px);
+    width: calc(100% - 500px);
     height: calc(100% - 100px);
     display: flex;
     flex-direction: row;
@@ -35,7 +53,7 @@
 }
 .right {
     float: right;
-    width: 440px;
+    width: 500px;
     height: calc(100% - 100px);
     overflow-x: hidden;
     overflow-y: auto;

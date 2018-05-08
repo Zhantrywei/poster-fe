@@ -1,11 +1,11 @@
 <template>
-  <div class="radioComponent" @dblclick="editComponent(comData.index)">
+  <div class="checkboxComponent" @dblclick="editComponent(comData.index)">
     <!-- <label :for="componentData.id"  v-text="componentData.label" :style="{width: componentData.labelWidth + 'px'}"></label>
     <input type="text" :id="componentData.id" :style="{borderRadius: componentData.borderRadius+'px',width: 'calc( 100% - '+componentData.labelWidth+'px )'}"> -->
     
       <label :for="comData.id"  v-text="comData.label" v-show="comData.label" :style="{width: comData.labelWidth + 'px'}"></label>
     <div class="content" v-for="(item,index) in comData.values" :key="index">
-      <input :type="comData.type" :name="comData.id" :class="{radioClass: comData.type=='radio', checkboxClass: comData.type=='checkbox', checkClass: comData.value == item.value}" :checked="comData.value == item.value" :value="item.value" :style="{height: comData.inputHeight+'px'}">{{item.text}}
+      <input type="checkbox" :name="comData.id" :checked="comData.value == item.value" :value="item.value">{{item.text}}
     <!-- <textarea :id="comData.id" :model="comData.id" :value="comData.value" :placeholder="comData.placeholder" :style="{borderRadius: comData.borderRadius+'px',width: 'calc( 100% - '+comData.labelWidth+'px )',backgroundColor: comData.backgroundColor,height: comData.inputHeight+'px'}"></textarea> -->
     </div>
   </div>
@@ -18,15 +18,14 @@ textarea {
   /* color: white; */
   color: inherit;
 }
-.radioComponent {
+.checkboxComponent {
   position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 2px;
-  box-sizing: border-box;
 }
-.radioComponent .content {
+.checkboxComponent .content {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -37,23 +36,6 @@ textarea {
 }
 .btnBgColorBlue {
   background-color: #69b2fd;
-}
-.radioClass {
-  border: 1px solid #dcdfe6;
-  border-radius: 100%;
-  width: 14px;
-  height: 14px;
-  background-color: #fff;
-  position: relative;
-  cursor: pointer;
-  display: inline-block;
-  box-sizing: border-box;
-}
-.checkboxClass {
-}
-.checkClass {
-  border-color: #409eff;
-  background: #409eff;
 }
 </style>
 <style scoped>
@@ -88,7 +70,7 @@ textarea {
 <script>
 import Bus from "../assets/js/bus";
 export default {
-  name: "radioComponent",
+  name: "checkboxComponent",
   props: ["comData"],
   data() {
     return {
@@ -130,7 +112,7 @@ export default {
       Bus.$emit("getIndex", index);
       this.isActive = true;
       var msg = 6;
-      Bus.$emit("getActive", msg);
+      Bus.$emit("getActive",msg); 
     }
   },
   mounted() {}

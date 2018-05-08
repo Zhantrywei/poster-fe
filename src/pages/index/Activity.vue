@@ -16,32 +16,32 @@
           </el-table-column>
           <el-table-column label="活动名称" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.activityName }}</span>
+              <span>{{ scope.row.Fname }}</span>
             </template>
           </el-table-column>
           <el-table-column label="活动时效" align="center">
             <template slot-scope="scope">
-              <span>{{ scope.row.activityTime }}</span>
+              <span>{{ scope.row.FstartTime }} 至 {{scope.row.FendTime}}</span>
             </template>
           </el-table-column>
           <el-table-column label="活动状态" align="center" :formatter="formatterACSta">
           </el-table-column>
           <el-table-column label="海报状态" align="center" :formatter="formatterPOSta">
           </el-table-column>
-          <el-table-column label="操作" align="center">
+          <el-table-column label="操作" align="center" width="438px">
             <el-table-column label="报名表单" align="center">
               <template slot-scope="scope">
-                <el-button size="mini">修改</el-button>
+                <el-button size="mini" v-if="scope.row.Fstatus == 0">修改</el-button>
                 <el-button size="mini" type="primary" @click="previewForm">预览</el-button>
               </template>
             </el-table-column>
             <el-table-column label="海报设计" align="center">
               <template slot-scope="scope">
-                <div v-if="scope.row.posterStatus == 0">
+                <div v-if="scope.row.FposterSts == 0">
                   <el-button size="mini" @click="addPoster">海报设计</el-button>
                 </div>
-                <div v-else-if="scope.row.posterStatus == 1">
-                  <el-button size="mini">修改</el-button>
+                <div v-else-if="scope.row.FposterSts == 1">
+                  <el-button size="mini" v-if="scope.row.Fstatus == 0">修改</el-button>
                   <el-button size="mini" type="primary" @click="previewPoster">预览</el-button>
                 </div>
                 <div v-else></div>
@@ -49,9 +49,9 @@
             </el-table-column>
             <el-table-column label="活动管理" align="center">
               <template slot-scope="scope">
-                <el-button size="mini" type="danger">删除</el-button>
-                <el-button size="mini" type="success" v-if="scope.row.activityStatus == 1">上线</el-button>
-                <el-button size="mini" type="success" v-if="scope.row.activityStatus == 2">下线</el-button>
+                <el-button size="mini" type="danger" @click="deleteActivity(scope.row._id)">删除</el-button>
+                <el-button size="mini" type="success" v-if="(scope.row.Fstatus == 0 && scope.row.FposterSts != 0)" @click="upActivity(scope.row._id,scope.row.Fstatus)">上线</el-button>
+                <el-button size="mini" type="success" v-if="scope.row.Fstatus == 1" @click="downActivity(scope.row._id,scope.row.Fstatus)">下线</el-button>
               </template>
             </el-table-column>
           </el-table-column>
@@ -69,216 +69,208 @@ header {
 .el-row {
   margin: 10px;
 }
-
 </style>
 <script>
 export default {
-    data() {
-        return {
-            tableData: [
-                {
-                    activityTime: "2018-05-01",
-                    activityName: "五一活动",
-                    activityStatus: 1,
-                    posterStatus: -1
-                },
-                {
-                    activityTime: "2018-06-01",
-                    activityName: "六一活动",
-                    activityStatus: 2,
-                    posterStatus: -1
-                },
-                {
-                    activityTime: "2018-10-01",
-                    activityName: "国庆活动",
-                    activityStatus: 1,
-                    posterStatus: 0
-                },
-                {
-                    activityTime: "2018-09-24",
-                    activityName: "中秋活动",
-                    activityStatus: 1,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                },
-                {
-                    activityTime: "2018-06-18",
-                    activityName: "端午活动",
-                    activityStatus: 2,
-                    posterStatus: 1
-                }
-            ]
-        };
+  data() {
+    return {
+      tableData: []
+    };
+  },
+  methods: {
+    handleEdit(index, row) {
+      console.log(index, row);
     },
-    methods: {
-        handleEdit(index, row) {
-            console.log(index, row);
-        },
-        handleDelete(index, row) {
-            console.log(index, row);
-        },
-        formatterACSta(row, column) {
-            if (row.activityStatus == 1) {
-                return "未上线";
-            } else if (row.activityStatus == 2) {
-                return "已上线";
-            } else {
-                return "活动状态有误";
-            }
-        },
-        formatterPOSta(row, column) {
-            if (row.posterStatus == -1) {
-                return "无需设计海报";
-            } else if (row.posterStatus == 0) {
-                return "海报未设计";
-            } else {
-                return "海报已设计";
-            }
-        },
-        addActivity() {
-          this.$router.push({ name: 'formdesign'})
-        },
-        addPoster() {
-          this.$router.push({ name: 'posterdesign'})
-        },
-        previewForm() {
-          this.$router.push({ name: 'form'})
-        },
-        previewPoster() {
-          this.$router.push({ name: 'poster'})
-        }
+    handleDelete(index, row) {
+      console.log(index, row);
+    },
+    formatterActName(row, column) {
+      if (row.Fname) {
+        console.log("row.Fname: ", row.Fname);
+      }
+    },
+    formatterACSta(row, column) {
+      if (row.Fstatus == 0) {
+        return "未上线";
+      } else if (row.Fstatus == 1) {
+        return "已上线";
+      } else {
+        return "活动状态有误";
+      }
+    },
+    formatterPOSta(row, column) {
+      if (row.FposterSts == -1) {
+        return "无需设计海报";
+      } else if (row.FposterSts == 0) {
+        return "海报未设计";
+      } else {
+        return "海报已设计";
+      }
+    },
+    addActivity() {
+      this.$router.push({ name: "formdesign" });
+    },
+    addPoster() {
+      this.$router.push({ name: "posterdesign" });
+    },
+    previewForm() {
+      this.$router.push({ name: "form" });
+    },
+    previewPoster() {
+      this.$router.push({ name: "poster" });
+    },
+    //删除活动
+    deleteActivity(id) {
+      var that = this;
+      this.$confirm("此操作将永久删除该活动, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          var postData = new FormData();
+          postData.append("id", id.$id);
+          postData.append("type", "activity");
+          this.$http
+            .post("/apis/common/delete.json", postData, {
+              headers: {
+                "Content-Type": "multipart/form-data; charset=utf-8"
+              }
+            })
+            .then(function(res) {
+              console.log("delete res: ", typeof res.data);
+
+              if (res.data.data.status == 100) {
+                that.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+                that.getList();
+              } else {
+                that.$alert(res.data.data.msg, "删除活动提示", {
+                  confirmButtonText: "确定"
+                });
+              }
+            })
+            .catch(function(err) {
+              console.log("delete err: ", err);
+              that.$alert(err, "删除活动提示", {
+                confirmButtonText: "确定"
+              });
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
+    },
+    //上线活动
+    upActivity(id, status) {
+      var that = this;
+      var postData = new FormData();
+      postData.append("id", id.$id);
+      postData.append("status", status);
+      console.log("id: ", id.$id);
+      console.log("status: ", status);
+      this.$http
+        .post("/apis/activity/onoff.json", postData, {
+          headers: {
+            "Content-Type": "multipart/form-data; charset=utf-8"
+          }
+        })
+        .then(function(res) {
+          if (res.data.data.status == 100) {
+            that.$message({
+              type: "success",
+              message: "上线成功!"
+            });
+            that.getList();
+          } else {
+            that.$alert(res.data.data.msg, "上线活动提示", {
+              confirmButtonText: "确定"
+            });
+          }
+        })
+        .catch(function(err) {
+          console.log(err);
+          that.$alert(err, "上线活动提示", {
+            confirmButtonText: "确定"
+          });
+        });
+    },
+    //下线活动
+    downActivity(id, status) {
+      var that = this;
+      var postData = new FormData();
+      postData.append("id", id.$id);
+      postData.append("status", status);
+      console.log("id: ", id.$id);
+      console.log("status: ", status);
+      this.$http
+        .post("/apis/activity/onoff.json", postData, {
+          headers: {
+            "Content-Type": "multipart/form-data; charset=utf-8"
+          }
+        })
+        .then(function(res) {
+          if (res.data.data.status == 100) {
+            that.$message({
+              type: "success",
+              message: "下线成功!"
+            });
+            that.getList();
+          } else {
+            that.$alert(res.data.data.msg, "下线活动提示", {
+              confirmButtonText: "确定"
+            });
+          }
+        })
+        .catch(function(err) {
+          console.log(err);
+          that.$alert(err, "下线活动提示", {
+            confirmButtonText: "确定"
+          });
+        });
+    },
+    //获取活动列表
+    getList() {
+      var that = this;
+      this.$http
+        .get("/apis/common/list.json?type=activity")
+        .then(function(res) {
+          console.log(res);
+          if (res.data.data.status == 100) {
+            that.tableData = res.data.data.result;
+            console.log("Array: ", res.data.data.result instanceof Array);
+          } else {
+            that.$alert(res.data.data.msg, "提示", {
+              confirmButtonText: "确定"
+              // callback: action => {
+              //   this.$message({
+              //     type: "info",
+              //     message: `action: ${action}`
+              //   });
+              // }
+            });
+          }
+        })
+        .catch(function(err) {
+          console.log(err);
+        });
     }
+  },
+  mounted() {
+    // this.$http.post('/apis/jytest.php',this.Qs.stringify({
+    //     name: "name"
+    // })).then(res => {
+    //     console.log(res)
+    // }).catch(err => {
+    //     console.log(err)
+    // })
+    this.getList();
+  }
 };
 </script>
 

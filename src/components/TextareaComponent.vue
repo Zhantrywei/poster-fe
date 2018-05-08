@@ -22,6 +22,7 @@ textarea {
   flex-direction: row;
   align-items: center;
   padding: 2px;
+  box-sizing: border-box;
 }
 .inputComponent .content {
   display: flex;
@@ -111,6 +112,7 @@ export default {
       console.log("comData.index: ",index);
       Bus.$emit("getIndex", index);
       this.isActive = true;
+      Bus.$emit("getActive",0)
     },
   },
   mounted() {}

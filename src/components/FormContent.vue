@@ -1,16 +1,35 @@
 <template>
-    <div class="form-content clearfix" id="formContent" :style="{width: formContent.width+'px', height: formContent.height+'px', top: formContent.y+'px', left: formContent.x+'px', transform:'rotate('+formContent.angle+'deg)', backgroundImage: 'url('+formContent.content+')', paddingTop: formContent.paddingTop+'px',paddingBottom: formContent.paddingBottom + 'px',paddingLeft: formContent.paddingLeft + 'px',paddingRight: formContent.paddingRight + 'px', fontSize: formContent.fontSize+'px', color: formContent.fontColor, fontFamily: formContent.fontFamily}" @mousedown.self="moveForm">
+    <div @dblclick.self="contentDBClick" class="form-content clearfix borderShow" id="formContent" :style="{width: formContent.width+'px', height: formContent.height+'px', top: formContent.y+'px', left: formContent.x+'px', transform:'rotate('+formContent.angle+'deg)', backgroundImage: 'url('+formContent.content+')', paddingTop: formContent.paddingTop+'px',paddingBottom: formContent.paddingBottom + 'px',paddingLeft: formContent.paddingLeft + 'px',paddingRight: formContent.paddingRight + 'px', fontSize: formContent.fontSize+'px', color: formContent.fontColor, fontFamily: formContent.fontFamily}" @mousedown.self="moveForm">
         <!-- <img :src="formContent.content" :width="formContent.width" :height="formContent.height" :style="{top: formContent.y + 'px',left: formContent.x + 'px', transform: 'rotate('+ formContent.angle + 'deg)'}" @mousedown="moveDesc"> -->
-        <form v-for="(item,index) in componentContent" :key="index">
+        <!-- <form v-for="(item,index) in componentContent" :key="index">
           <div v-if="item.type=='text'||item.type=='password'" class="clearfix" :class="{borderShow: item.index == borderIndex}">
             <input-component :style="{height: formContent.lineHeight+'px'}" :com-data="item"></input-component>
           </div>
           <div v-if="item.type=='textarea'" class="clearfix" :class="{borderShow: item.index == borderIndex}">
             <textarea-component :style="{height: formContent.lineHeight+'px'}" :com-data="item"></textarea-component>
           </div>
-          <!-- <vue-form-generator :schema="schema" :model="model" :options="formOptions"></vue-form-generator> -->
-          <!-- <input-component :style="{height: formContent.lineHeight+'px'}" :com-id="1"></input-component>
-          <input-component :style="{height: formContent.lineHeight+'px'}" :com-id="2"></input-component> -->
+          <div v-if="item.type=='radio'||item.type=='checkbox'" class="clearfix" :class="{borderShow: item.index == borderIndex}">
+            <radio-component :style="{height: formContent.lineHeight+'px'}" :com-data="item"></radio-component>
+          </div>
+          <div v-if="item.type=='select'" class="clearfix" :class="{borderShow: item.index == borderIndex}">
+            <select-component :style="{height: formContent.lineHeight+'px'}" :com-data="item"></select-component>
+          </div>
+          <div v-if="item.type=='upload'" class="clearfix" :class="{borderShow: item.index == borderIndex}">
+            <upload-component :style="{height: formContent.lineHeight+'px'}" :com-data="item"></upload-component>
+          </div>
+          <div v-if="item.type=='submit'" class="clearfix" :class="{borderShow: item.index == borderIndex}" >
+            <submit-component :style="{height: formContent.lineHeight+'px'}" :com-data="item"></submit-component>
+          </div>
+        </form> -->
+        <form class="clearfix">
+          <div v-for="(item,index) in componentContent" :key="index" class="clearfix">
+            <input-component v-if="item.type=='text'||item.type=='password'" class="clearfix" :class="{borderShow: item.index == borderIndex}" :style="{height: formContent.lineHeight+'px'}" :com-data="item"></input-component>
+            <textarea-component  v-if="item.type=='textarea'" class="clearfix" :class="{borderShow: item.index == borderIndex}" :style="{height: formContent.lineHeight+'px'}" :com-data="item"></textarea-component>
+            <radio-component v-if="item.type=='radio'||item.type=='checkbox'" class="clearfix" :class="{borderShow: item.index == borderIndex}" :style="{height: formContent.lineHeight+'px'}" :com-data="item"></radio-component>
+            <select-component v-if="item.type=='select'" class="clearfix" :class="{borderShow: item.index == borderIndex}" :style="{height: formContent.lineHeight+'px'}" :com-data="item"></select-component>
+            <upload-component v-if="item.type=='upload'" class="clearfix" :class="{borderShow: item.index == borderIndex}" :style="{height: formContent.lineHeight+'px'}" :com-data="item"></upload-component>
+            <submit-component v-if="item.type=='submit'" class="clearfix" :class="{borderShow: item.index == borderIndex}" :style="{height: formContent.lineHeight+'px'}" :com-data="item"></submit-component>
+          </div>
         </form>
     </div>
 </template>
@@ -42,8 +61,12 @@
 
 <script>
 import Bus from "../assets/js/bus";
-import InputComponent from "./InputComponent.vue"
-import TextareaComponent from "./TextareaComponent.vue"
+import InputComponent from "./InputComponent.vue";
+import TextareaComponent from "./TextareaComponent.vue";
+import RadioComponent from "./RadioComponent.vue";
+import SelectComponent from "./SelectComponent.vue";
+import UploadComponent from "./UploadComponent.vue";
+import SubmitComponent from "./SubmitComponent.vue";
 export default {
   name: "formContent",
   props: ["formContent"],
@@ -54,7 +77,12 @@ export default {
     };
   },
   components: {
-    InputComponent,TextareaComponent
+    InputComponent,
+    TextareaComponent,
+    RadioComponent,
+    SelectComponent,
+    UploadComponent,
+    SubmitComponent
   },
   methods: {
     moveForm(e) {
@@ -92,18 +120,19 @@ export default {
         flag = 0;
       }
     },
-    loadContent() {
-      
+    loadContent() {},
+    contentDBClick() {
+      var msg = 5;
+      Bus.$emit("getActive", msg);
     }
   },
   mounted() {
     var that = this;
     console.log("test: ", this.formContent);
     // Bus.$on("getComponentContent", msg => (this.componentContent = msg));
-    console.log("componentContent: ",this.componentContent)
+    console.log("componentContent: ", this.componentContent);
   },
-  beforeMount(){
-    
+  beforeMount() {
     Bus.$on("getComponentContent", msg => (this.componentContent = msg));
     Bus.$on("getBorderIndex", msg => (this.borderIndex = msg));
   }

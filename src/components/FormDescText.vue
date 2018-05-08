@@ -1,6 +1,6 @@
 <template>
   <div class="form-desc-text" id="formDescText">
-    <p :style="{top: formDescText.y + 'px',left: formDescText.x + 'px', transform: 'rotate('+ formDescText.angle + 'deg)', fontFamily: formDescText.fontFamily, fontSize: formDescText.fontSize+'px', color: formDescText.fontColor}" v-html="formDescText.content" @mousedown="moveDesc"></p>
+    <p @dblclick="descTextDBClick" :style="{top: formDescText.y + 'px',left: formDescText.x + 'px', transform: 'rotate('+ formDescText.angle + 'deg)', fontFamily: formDescText.fontFamily, fontSize: formDescText.fontSize+'px', color: formDescText.fontColor}" v-html="formDescText.content" @mousedown="moveDesc"></p>
   </div>
 </template>
 <script>
@@ -46,6 +46,10 @@ export default {
         };
         flag = 0;
       }
+    },
+    descTextDBClick(){
+      var msg = 4;
+      Bus.$emit("getActive",msg)
     }
   },
   mounted() {
