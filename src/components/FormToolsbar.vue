@@ -342,6 +342,9 @@
               <el-input v-model="inputCom.borderRadius" style="width: 50%;" type="number">
                 <template slot="append">px</template>
               </el-input>
+            </el-form-item>  
+            <el-form-item label="显示边框">              
+            <el-switch v-model="inputCom.borderShow"></el-switch>
             </el-form-item>   
             <el-form-item>
               <el-button type="success" icon="el-icon-check" circle @click="inputComSubmit(inputCom)"></el-button>
@@ -665,13 +668,13 @@ export default {
         type: "text",
         content: "",
         fontFamily: "黑体",
-        fontSize: 32,
+        fontSize: 18,
         fontColor: "#C71585",
         width: null,
         height: null,
         x: 0,
         y: 0,
-        angle: 30
+        angle: 0
         //图片描述
         // type: "img",
         // content: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1524650893445&di=652b69f04ef1801032235485d88ee824&imgtype=0&src=http%3A%2F%2Fwww.soft711.com%2Fuploadfile%2F2014%2F0217%2F20140217020553126.png",
@@ -688,13 +691,13 @@ export default {
         content: "",
         fontFamily: "微软雅黑",
         fontSize: 15,
-        fontColor: "#fff",
+        fontColor: "#000",
         width: 280,
         height: 392,
         x: 49,
         y: 145,
         angle: 0,
-        paddingTop: 60,
+        paddingTop: 0,
         paddingBottom: 0,
         paddingLeft: 11,
         paddingRight: 11,
@@ -753,8 +756,9 @@ export default {
         placeholder: "请输入内容",
         borderRadius: 4,
         labelWidth: 50,
-        backgroundColor: "#0F5BAA",
-        inputHeight: 30
+        backgroundColor: "",
+        inputHeight: 30,
+        borderShow: true
       },
       radioShow: false,
       radioCom: {
@@ -799,32 +803,32 @@ export default {
     PasswordCom
   },
   watch: {
-    // "inputCom.index": {
-    //   handler: (val, oldVal) => {
-    //     console.log("indexVal: ", val);
-    //     console.log("indexOldVal: ", oldVal);
-    //     Bus.$emit("getBorderIndex", val);
-    //   },
-    //   // 深度观察
-    //   deep: true
-    // },
-    // "radio.index": {
-    //   handler: (val, oldVal) => {
-    //     console.log("indexVal: ", val);
-    //     console.log("indexOldVal: ", oldVal);
-    //     Bus.$emit("getBorderIndex", val);
-    //   },
-    //   // 深度观察
-    //   deep: true
-    // },
-    // "componentContent.length": {
-    //   handler: (val, oldVal) => {
-    //     console.log("indexVal: ", val);
-    //     console.log("indexOldVal: ", oldVal);
-    //     Bus.$emit("getBorderIndex", val);
-    //   },
-    //   deep: true
-    // }
+    "inputCom.index": {
+      handler: (val, oldVal) => {
+        console.log("indexVal: ", val);
+        console.log("indexOldVal: ", oldVal);
+        Bus.$emit("getBorderIndex", val);
+      },
+      // 深度观察
+      deep: true
+    },
+    "radio.index": {
+      handler: (val, oldVal) => {
+        console.log("indexVal: ", val);
+        console.log("indexOldVal: ", oldVal);
+        Bus.$emit("getBorderIndex", val);
+      },
+      // 深度观察
+      deep: true
+    },
+    "componentContent.length": {
+      handler: (val, oldVal) => {
+        console.log("indexVal: ", val);
+        console.log("indexOldVal: ", oldVal);
+        Bus.$emit("getBorderIndex", val);
+      },
+      deep: true
+    }
   },
   methods: {
     onSubmit() {
@@ -1260,7 +1264,6 @@ export default {
                     console.log("formId: ", formId);
                     var activityId = res.data.data.result;
                     console.log("activityId: ", activityId);
-
                   })
                   .catch(function(err) {
                     console.log("新增活动返回的错误: ", err);

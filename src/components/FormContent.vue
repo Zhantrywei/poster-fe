@@ -55,7 +55,7 @@
   z-index: 97;
 }
 .borderShow {
-  border: 1px dotted #eee;
+  border: 1px dotted #aaa;
 }
 </style>
 
