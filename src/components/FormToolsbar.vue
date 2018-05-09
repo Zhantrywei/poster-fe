@@ -32,7 +32,8 @@
       <el-collapse-item title="表单背景设计" name="2">
         <el-form :model="formBG" label-width="80px">
           <el-form-item label="背景图片">
-            <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" list-type="picture" :limit="1" name="formBGImg">
+            <!-- <el-upload class="upload-demo" action="/apis/common/uploadimg.debug" list-type="picture" :data="uploadData" :limit="1" name="formBGImg" :before-upload="beforeUpload" :on-preview="previewBanner" :on-change="changeFile"> -->
+            <el-upload class="upload-demo" action="/apis/common/uploadimg.debug" list-type="picture" :data="uploadData" :limit="1" :auto-upload="false" name="formBGImg"  :on-change="changeFile" ref="upload">
               <el-button size="small" type="primary">点击上传</el-button>
               <span style="margin-left: 10px;" slot="tip" class="el-upload__tip">建议上传png文件，且不超过500kb</span>
             </el-upload>
@@ -73,7 +74,7 @@
           </el-form-item>
           <!-- 标题为图片 -->
           <el-form-item label="标题图片" v-show="formTitle.type == 'img'">
-            <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" list-type="picture" :limit="1" name="formTitleImg">
+            <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :data="uploadData" list-type="picture" :limit="1" name="formTitleImg">
               <el-button size="small" type="primary">点击上传</el-button>
               <span style="margin-left: 10px;" slot="tip" class="el-upload__tip">建议上传png文件，且不超过500kb</span>
             </el-upload>
@@ -397,10 +398,19 @@
             <el-form-item label="text">
               <el-input type="text" v-model="radioItem.text"></el-input>
             </el-form-item>
-            <el-form-item label="已有项">
+            <el-form-item label="已有项" v-if="radioCom.type!= 'select'">
               <div v-for="(item,index) in radioCom.values" :key="index" >
-              <input :type="formComponent.type" :name="radioCom.id" :value="item.value">{{item.text}}
-
+              <input :type="radioCom.type" :name="radioCom.id" :value="item.value">{{item.text}}
+              <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="itemComDelete(radioCom,index)"></el-button>
+              </div>
+              <!-- <div v-for="(item,index) in radioCom.values" :key="index" v-else>                 
+              <span>{{'选项'+(index+1)+' : '+item.text}}</span>
+              </div> -->
+            </el-form-item>
+            <el-form-item label="已有项" v-else>
+              <div v-for="(item,index) in radioCom.values" :key="index" >                 
+              <span>{{'选项'+(index+1)+' : '+item.text}}</span>
+              <el-button type="danger" icon="el-icon-delete" size="mini" circle @click="itemComDelete(radioCom,index)"></el-button>              
               </div>
             </el-form-item>
             <el-form-item>
@@ -412,53 +422,56 @@
             </el-form-item>
           </el-form>
         </div>
-        <!-- checkbox类型 -->
-        <!-- <div class="checkbox" v-show="checkboxShow">
-          <el-form ref="form" :model="checkboxoCom" label-width="80px">
+        <!-- upload类型 -->
+        <div class="upload" v-show="uploadShow">
+          <el-form ref="form" :model="uploadCom" label-width="80px">
             <el-form-item label="序号">
-              <span v-text="checkboxCom.index"></span>
+              <span v-text="uploadCom.index"></span>
             </el-form-item>
             <el-form-item label="类型">
-              <span v-text="checkboxCom.type"></span>
+              <span v-text="uploadCom.type"></span>
             </el-form-item>
             <el-form-item label="控件ID">
-              <span v-text="checkboxCom.id"></span>
+              <span v-text="uploadCom.id"></span>
             </el-form-item>
             <el-form-item label="Label">
-              <el-input v-model="checkboxCom.label" type="text"></el-input>
+              <el-input v-model="uploadCom.label" type="text"></el-input>
+            </el-form-item>
+            <el-form-item label="按钮名称">
+              <el-input v-model="uploadCom.value" type="text"></el-input>
             </el-form-item>
             <el-form-item label="Label宽度">
-              <el-input v-model="checkboxCom.labelWidth" style="width: 50%;" type="number">
+              <el-input v-model="uploadCom.labelWidth" style="width: 50%;" type="number">
                 <template slot="append">px</template>
               </el-input>
-            </el-form-item>
-            <el-form-item label="name">
-              <span v-text="checkboxCom.id"></span>
             </el-form-item> 
-            <el-form-item label="默认值">
-              <el-input v-model="checkboxCom.value" type="text"></el-input>
+            <!-- <el-form-item label="框高度">
+              <el-input v-model="uploadCom.inputHeight" style="width: 50%;" type="number">
+                <template slot="append">px</template>
+              </el-input>
+            </el-form-item> -->
+            <el-form-item label="提示文本">
+              <el-input v-model="uploadCom.placeholder" type="text"></el-input>
             </el-form-item>
-            <el-form-item label="value">
-              <el-input type="text" v-model="checkboxItem.value"></el-input>
+            <el-form-item label="背景颜色">
+              <el-color-picker v-model="uploadCom.backgroundColor" show-alpha :predefine="predefineColors">
+              </el-color-picker>
             </el-form-item>
-            <el-form-item label="text">
-              <el-input type="text" v-model="checkboxItem.text"></el-input>
-            </el-form-item>
-            <el-form-item label="已有项">
-              <div v-for="(item,index) in checkboxCom.values" :key="index">
-              <input type="radio" :name="checkboxCom.id" :value="item.value">{{item.text}}
-
-              </div>
-            </el-form-item>
+            <!-- <el-form-item label="边框弧度">
+              <el-input v-model="inputCom.borderRadius" style="width: 50%;" type="number">
+                <template slot="append">px</template>
+              </el-input>
+            </el-form-item> -->
             <el-form-item>
-              <el-button type="success" icon="el-icon-check" circle @click="checkboxComSubmit(checkboxCom)"></el-button>
-              <el-button type="danger" icon="el-icon-delete" circle @click="checkboxComDelete(checkboxCom)"></el-button>
-              <el-button type="primary" icon="el-icon-arrow-up" circle @click="checkboxComUp(checkboxCom)"></el-button>
-              <el-button type="primary" icon="el-icon-arrow-down" circle @click="checkboxComDown(checkboxCom)"></el-button>
-              <el-button type="primary" icon="el-icon-plus" circle @click="checkboxComAdd(checkboxCom,checkboxItem)"></el-button>
+              <el-button type="success" icon="el-icon-check" circle @click="uploadComSubmit(uploadCom)"></el-button>
+              <el-button type="danger" icon="el-icon-delete" circle @click="uploadComDelete(uploadCom)"></el-button>
+              <el-button type="primary" icon="el-icon-arrow-up" circle @click="uploadComUp(uploadCom)"></el-button>
+              <el-button type="primary" icon="el-icon-arrow-down" circle @click="uploadComDown(uploadCom)"></el-button>
             </el-form-item>
           </el-form>
-        </div> -->
+        </div>
+        <!-- submit类型 -->
+        <div class="submit" v-show="submitShow"></div>
       </div>
 
       <div class="btn">
@@ -549,6 +562,7 @@ import FormBGImg from "../assets/img/亲子游表单BG.png";
 import TextCom from "./formComponentEdit/textCom";
 import PasswordCom from "./formComponentEdit/passwordCom";
 import TextareaCom from "./formComponentEdit/textareaCom";
+import common from "../assets/js/common";
 export default {
   name: "toolsbar",
   data() {
@@ -635,7 +649,6 @@ export default {
       },
       //表单背景设计, 需要和FormPreview通信,单项通信FormToolsbar -> FormPreview
       formBG: {
-        // bgImgUrl: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1525245573&di=833509e0e4fc2558f6771579c24071b7&imgtype=jpg&er=1&src=http%3A%2F%2Fimg.lenovomm.com%2Fs3%2Fimg%2Fapp%2Fapp-img-lestore%2F1127-2016-07-01012755-1467350875451.jpg%3FisCompress%3Dtrue%26amp%3Bwidth%3D320%26amp%3Bheight%3D480%26amp%3Bquantity%3D1%26amp%3Brotate%3Dtrue',
         bgImgUrl: "",
         bgColor: "#fff"
       },
@@ -749,9 +762,9 @@ export default {
       inputCom: {
         index: "",
         type: "text", //password,text
-        label: "姓名",
-        model: "username",
-        id: "username",
+        label: "",
+        model: "",
+        id: "",
         value: "",
         placeholder: "请输入内容",
         borderRadius: 4,
@@ -762,11 +775,11 @@ export default {
       },
       radioShow: false,
       radioCom: {
-        id: "sex",
-        model: "sex",
+        id: "",
+        model: "",
         index: "",
         label: "",
-        value: "boy",
+        value: "",
         type: "radio",
         // values: [{ value: "boy", text: "男" }, { value: "girl", text: "女" }],
         values: [],
@@ -778,21 +791,37 @@ export default {
         value: "",
         text: ""
       },
-      checkboxShow: false,
-      checkboxCom: {
+      // checkboxShow: false,
+      // checkboxCom: {
+      //   id: "",
+      //   model: "",
+      //   index: "",
+      //   label: "",
+      //   value: "",
+      //   type: "radio",
+      //   // values: [{ value: "boy", text: "男" }, { value: "girl", text: "女" }],
+      //   values: [],
+      //   labelWidth: 50,
+      //   inputHeight: 30
+      // },
+      // checkboxItem: {
+      //   value: "",
+      //   text: ""
+      // },
+      uploadShow: false,
+      uploadCom: {
         id: "",
         model: "",
         index: "",
         label: "",
-        value: "boy",
-        type: "radio",
-        values: [{ value: "boy", text: "男" }, { value: "girl", text: "女" }],
-        labelWidth: 50,
-        inputHeight: 30
-      },
-      checkboxItem: {
         value: "",
-        text: ""
+        type: "upload",
+        labelWidth: 50
+      },
+      submitShow: false,
+      uploadData: {
+        img: "",
+        directory: ""
       },
       qrcodeShow: false
     };
@@ -884,28 +913,6 @@ export default {
       ) {
         return false;
       }
-      //先定义不同组件需要的字段
-      //单行文本、密码
-      // var inputCom = {
-      //     index: this.componentContent.length+1,
-      //     id: this.formComponent.id,
-      //     model: this.formComponent.id,
-      //     type: this.formComponent.type,
-      //     label: this.formComponent.label,
-      //     value: '', //默认值
-      //     placeholder: this.formComponent.type=='password'?'请输入密码':'请输入内容'
-      // },
-      //多行文本
-      /* var textareaCom = {
-             index: this.componentContent.length+1,
-             id: this.formComponent.id,
-             model: this.formComponent.id,
-             type: this.formComponent.type,
-             label: this.formComponent.label,
-             value: '', //默认值
-             placeholder: '请输入内容'
-      }
-      */
       if (
         this.formComponent.type == "text" ||
         this.formComponent.type == "password" ||
@@ -920,15 +927,16 @@ export default {
           value: "", //默认值
           placeholder:
             this.formComponent.type == "password" ? "请输入密码" : "请输入内容",
-          borderRadius: this.inputCom.borderRadius,
-          labelWidth: this.inputCom.labelWidth,
-          backgroundColor: this.inputCom.backgroundColor,
-          inputHeight: this.inputCom.inputHeight
+          borderRadius: 4,
+          labelWidth: 50,
+          backgroundColor: "",
+          inputHeight: 30,
+          borderShow: false
         };
         this.inputCom = inputCom;
         this.inputComShow = true;
+        this.uploadShow = false;
         this.radioShow = false;
-        // this.checkboxShow = false;
         this.componentContent.push(inputCom);
         this.sendComponentContent();
       } else if (
@@ -942,38 +950,43 @@ export default {
           model: this.formComponent.id,
           type: this.formComponent.type,
           label: this.formComponent.label,
-          value: this.radioCom.value,
-          labelWidth: this.radioCom.labelWidth,
-          backgroundColor: this.radioCom.backgroundColor,
-          inputHeight: this.radioCom.inputHeight,
-          values: this.radioCom.values
+          value: "",
+          labelWidth: 50,
+          backgroundColor: "",
+          inputHeight: 30,
+          values: []
         };
         this.radioCom = radioCom;
         this.radioShow = true;
         this.inputComShow = false;
-        // this.checkboxShow = false;
+        this.uploadShow = false;
         this.componentContent.push(radioCom);
         this.sendComponentContent();
+      } else if (this.formComponent.type == "upload") {
+        var uploadCom = {
+          index: this.componentContent.length + 1,
+          id: this.formComponent.id,
+          model: this.formComponent.id,
+          type: this.formComponent.type,
+          label: this.formComponent.label,
+          value: "点击上传",
+          labelWidth: 50,
+          backgroundColor: "",
+          inputHeight: 30,
+          placeholder: "只能上传jpg/png文件，且不超过500kb"
+        };
+        this.uploadCom = uploadCom;
+        this.uploadShow = true;
+        this.radioShow = false;
+        this.inputComShow = false;
+        this.componentContent.push(uploadCom);
+        this.sendComponentContent();
       }
-      // else if(this.formComponent.type == "checkbox"){
-      //   var checkboxCom = {
-      //     index: this.componentContent.length + 1,
-      //     id: this.formComponent.id,
-      //     model: this.formComponent.id,
-      //     type: this.formComponent.type,
-      //     label: this.formComponent.label,
-      //     value: this.checkboxCom.value,
-      //     labelWidth: this.checkboxCom.labelWidth,
-      //     inputHeight: this.checkboxCom.inputHeight,
-      //     values: this.checkboxCom.values
-      //   };
-      //   this.checkboxCom = checkboxCom;
-      //   this.checkboxShow = true;
-      //   this.radioShow = false;
-      //   this.inputComShow = false;
-      //   this.componentContent.push(checkboxCom);
-      //   this.sendComponentContent()
-      // }
+      this.formComponent = {
+        id: "",
+        label: "",
+        type: ""
+      };
     },
     //inputCom按钮
     inputComSubmit(inputCom) {
@@ -1064,7 +1077,7 @@ export default {
       }
     },
 
-    //inputCom按钮
+    //radioCom按钮
     radioComSubmit(radioCom) {
       var index = radioCom.index - 1;
       this.componentContent[index] = JSON.parse(JSON.stringify(radioCom));
@@ -1076,12 +1089,15 @@ export default {
       if (item.value == "" || item.text == "") {
         return false;
       } else {
-        radioCom.values.push(item);
+        this.radioCom.values.push(item);
         this.radioItem = {
           value: "",
           text: ""
         };
         console.log("radioCom: ", radioCom);
+        this.componentContent[radioCom.index - 1].values = JSON.parse(
+          JSON.stringify(this.radioCom.values)
+        );
         console.log("add component: ", this.componentContent);
         this.sendComponentContent();
       }
@@ -1178,6 +1194,95 @@ export default {
         this.componentContent[index] = temp;
         console.log("down component: ", this.componentContent);
         this.radioCom.index += 1;
+        this.sendComponentContent();
+      } else {
+        alert("不能再向下移动了");
+        return false;
+      }
+    },
+
+    //uploadCom按钮
+    uploadComSubmit(uploadCom) {
+      var index = uploadCom.index - 1;
+      console.log("uploadCom: ", uploadCom);
+      this.componentContent[index] = JSON.parse(JSON.stringify(uploadCom));
+      console.log("submit component: ", this.componentContent);
+      this.sendComponentContent();
+    },
+    uploadComDelete(uploadCom) {
+      console.log("uploadCom: ", uploadCom);
+      var index = uploadCom.index - 1;
+      // this.componentContent.splice(index, 1);
+      // 数组截取，拿index前面的数组不变
+      if (index != 0) {
+        var beforeArray = this.componentContent.slice(0, index);
+      } else {
+        var beforeArray = [];
+      }
+      var afterArray = this.componentContent.slice(index + 1);
+      afterArray.forEach(function(item) {
+        item.index--;
+      });
+      this.componentContent = beforeArray.concat(afterArray);
+      console.log("delete: ", this.componentContent);
+      this.sendComponentContent();
+      if (this.componentContent.length == 0) {
+        this.uploadComShow = false;
+        this.uploadCom = {
+          id: "",
+          label: "",
+          index: "",
+          type: "",
+          value: "",
+          placeholder: "请输入内容",
+          borderRadius: 4,
+          labelWidth: 50,
+          backgroundColor: "#0F5BAA",
+          inputHeight: 30
+        };
+        alert("表单已空");
+      } else {
+        this.uploadCom = JSON.parse(
+          JSON.stringify(
+            this.componentContent[this.componentContent.length - 1]
+          )
+        );
+      }
+    },
+    uploadComUp(uploadCom) {
+      console.log("uploadCom: ", uploadCom.index);
+      var index = uploadCom.index - 1;
+      if (index <= 0) {
+        alert("不能再向上移动了");
+        return false;
+      } else {
+        var beforeIndex = index - 1;
+        var temp = JSON.parse(
+          JSON.stringify(this.componentContent[beforeIndex])
+        );
+        this.componentContent[beforeIndex] = JSON.parse(
+          JSON.stringify(this.componentContent[index])
+        );
+        this.componentContent[index] = temp;
+        console.log("up component: ", this.componentContent);
+        this.uploadCom.index -= 1;
+        this.sendComponentContent();
+      }
+    },
+    uploadComDown(uploadCom) {
+      console.log("uploadCom: ", uploadCom.index);
+      var index = uploadCom.index - 1;
+      if (index + 1 < this.componentContent.length) {
+        var afterIndex = index + 1;
+        var temp = JSON.parse(
+          JSON.stringify(this.componentContent[afterIndex])
+        );
+        this.componentContent[afterIndex] = JSON.parse(
+          JSON.stringify(this.componentContent[index])
+        );
+        this.componentContent[index] = temp;
+        console.log("down component: ", this.componentContent);
+        this.uploadCom.index += 1;
         this.sendComponentContent();
       } else {
         alert("不能再向下移动了");
@@ -1295,7 +1400,57 @@ export default {
       });
     },
     //清空表单设计
-    resetActivity() {}
+    resetActivity() {},
+    //删除item
+    itemComDelete(radioCom, index) {
+      console.log("index: ", index);
+      if (index == 0) {
+        this.radioCom.values = this.radioCom.values.slice(1);
+      } else {
+        this.radioCom.values = this.radioCom.values
+          .slice(0, index)
+          .concat(this.radioCom.values.slice(index + 1));
+      }
+      this.componentContent[radioCom.index - 1].values = JSON.parse(
+        JSON.stringify(this.radioCom.values)
+      );
+      this.sendComponentContent();
+    },
+    //图片上传之前
+    // beforeUpload(file) {
+    //    var reader = new FileReader();
+    //   console.log(file.raw);
+    // },
+    //on-preview function
+    // previewBanner(file) {
+    //   console.log(file);
+    //   var that = this;
+    //   //this.imageUrl = URL.createObjectURL(file.raw);
+    //   var reader = new FileReader();
+    //   reader.readAsDataURL(file.raw);
+    //   reader.onload = function(e) {
+    //     console.log("this-result: ", this.result); // 这个就是base64编码了
+    //     that.uploadData.img = this.result;
+    //     // that.uploadData.img =
+    //   };
+    // },
+    // on-change function
+    changeFile(file, fileList) {
+      console.log(file);
+      console.log(name);
+      var that = this;
+      //this.imageUrl = URL.createObjectURL(file.raw);
+      var reader = new FileReader();
+      reader.readAsDataURL(file.raw);
+      reader.onload = function(e) {
+        // console.log("this-result: ", this.result); // 这个就是base64编码了
+        that.uploadData.img = this.result;
+        that.uploadData.directory = "formBGImg"
+        that.$refs.upload.submit();
+        // that.uploadData.img =
+      };
+      // this.$http.post('/apis/common/uploadimg.debug')
+    }
   },
   mounted() {
     this.sendFormBG();

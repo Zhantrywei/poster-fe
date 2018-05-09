@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="app clearfix">
+  <div id="app" class="app">
     <router-view></router-view>
   </div>
 </template>
@@ -83,7 +83,7 @@ html,body {
   height: 100%;
   /* overflow: hidden; */
   box-sizing: border-box;
-  background-color: #ccc;
+  /* background-color: #ccc; */
 }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -93,7 +93,7 @@ html,body {
   color: #2c3e50;
   width: 100%;
   height: 100%;
-  background-color: lightsalmon;
+  /* background-color: lightsalmon; */
 }
 
 </style>

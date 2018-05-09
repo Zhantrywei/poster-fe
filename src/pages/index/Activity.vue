@@ -31,18 +31,18 @@
           <el-table-column label="操作" align="center" width="438px">
             <el-table-column label="报名表单" align="center">
               <template slot-scope="scope">
-                <el-button size="mini" v-if="scope.row.Fstatus == 0">修改</el-button>
-                <el-button size="mini" type="primary" @click="previewForm">预览</el-button>
+                <el-button size="mini" v-if="scope.row.Fstatus == 0" @click="changeForm(scope.row)">修改</el-button>
+                <el-button size="mini" type="primary" @click="previewForm(scope.row)">预览</el-button>
               </template>
             </el-table-column>
             <el-table-column label="海报设计" align="center">
               <template slot-scope="scope">
                 <div v-if="scope.row.FposterSts == 0">
-                  <el-button size="mini" @click="addPoster">海报设计</el-button>
+                  <el-button size="mini" @click="addPoster(scope.row)">海报设计</el-button>
                 </div>
                 <div v-else-if="scope.row.FposterSts == 1">
-                  <el-button size="mini" v-if="scope.row.Fstatus == 0">修改</el-button>
-                  <el-button size="mini" type="primary" @click="previewPoster">预览</el-button>
+                  <el-button size="mini" v-if="scope.row.Fstatus == 0"  @click="changePoster(scope.row)">修改</el-button>
+                  <el-button size="mini" type="primary" @click="previewPoster(scope.row)">预览</el-button>
                 </div>
                 <div v-else></div>
               </template>
@@ -110,14 +110,32 @@ export default {
     addActivity() {
       this.$router.push({ name: "formdesign" });
     },
-    addPoster() {
-      this.$router.push({ name: "posterdesign" });
+    addPoster(row) {
+      console.log(row._id.$id);
+      var id = row._id.$id;
+      // this.$route.push({ path: "/xxx", query: { id: 1 } }); //类似get传参，通过URL传递参数
+      // this.$route.push({ path: "/xxx", params: { id: 1 } }); //类似post传参
+      this.$router.push({ name: "posterdesign", query: {row: JSON.stringify(row)} });
+      // this.$router.push({ name: "posterdesign", params: {row: JSON.stringify(row)} });
     },
-    previewForm() {
-      this.$router.push({ name: "form" });
+    //修改表单
+    changeForm(row) {},
+    //修改海报
+    changePoster(row) {},
+    //预览表单
+    previewForm(row) {
+      if (row.FformId) {
+        var id = row.FformId;
+        this.$router.push({name: 'form', query: {id:id}});
+      } else {
+        this.$router.push({ name: "form" });
+      }
     },
-    previewPoster() {
-      this.$router.push({ name: "poster" });
+    previewPoster(row) {
+      if (row.FposterBgUrl && FposterQrcode && FposterTipsTxt && FposterUrl) {
+      } else {
+        this.$router.push({ name: "poster" });
+      }
     },
     //删除活动
     deleteActivity(id) {

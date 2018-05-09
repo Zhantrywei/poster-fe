@@ -1,9 +1,9 @@
 <template>
-  <div class="radioComponent" @dblclick="editComponent(comData.index)">
+  <div class="uploadComponent" @dblclick="editComponent(comData.index)" :style="{backgroundColor: comData.backgroundColor}">
     <label :for="comData.id"  v-text="comData.label" v-show="comData.label" :style="{width: comData.labelWidth + 'px'}"></label>
     <el-upload :action="uploadUrl">
-      <el-button size="small" type="primary">点击上传</el-button>
-      <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+      <el-button size="small" type="primary">{{comData.value}}</el-button>
+      <div slot="tip" class="el-upload__tip">{{comData.placeholder}}</div>
     </el-upload>
   </div>
 
@@ -14,7 +14,7 @@ textarea {
   padding: 0 6px;
   color: inherit;
 }
-.radioComponent {
+.uploadComponent {
   position: relative;
   display: flex;
   flex-direction: row;
@@ -22,7 +22,7 @@ textarea {
   padding: 2px;
   box-sizing: border-box;
 }
-.radioComponent .content {
+.uploadComponent .content {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -67,7 +67,7 @@ textarea {
 <script>
 import Bus from "../assets/js/bus";
 export default {
-  name: "radioComponent",
+  name: "uploadComponent",
   props: ["comData"],
   data() {
     return {

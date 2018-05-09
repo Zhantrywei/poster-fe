@@ -1,134 +1,182 @@
 <template>
-  <div class="form" :style="{backgroundImage: 'url('+formData.form.bgImgUrl+')'}">
+  <div class="form" :style="{backgroundImage: 'url('+formBG.bgImgUrl+')', backgroundColor: formBG.bgColor}">
+      <div class="formTitle">
+          <h1 v-if="formTitle.type == 'text'" :style="{top: formTitle.y + 'px',left: formTitle.x + 'px', transform: 'rotate('+ formTitle.angle + 'deg)', fontFamily: formTitle.fontFamily, fontSize: formTitle.fontSize+'px', color: formTitle.fontColor}">{{formTitle.content}}</h1>
+          <img v-else :src="formTitle.content" :width="formTitle.width" :height="formTitle.height" :style="{top: formTitle.y + 'px',left: formTitle.x + 'px', transform: 'rotate('+ formTitle.angle + 'deg)'}">
+      </div>
+      <div class="formDesc">
+        <p  v-if="formDesc.type == 'text'" :style="{top: formDesc.y + 'px',left: formDesc.x + 'px', transform: 'rotate('+ formDesc.angle + 'deg)', fontFamily: formDesc.fontFamily, fontSize: formDesc.fontSize + 'px'   , color: formDesc.fontColor}" v-html="formDesc.content"></p>
+        <img v-else :src="formDesc.content" :width="formDesc.width" :height="formDesc.height" :style="{top: formDesc.y + 'px',left: formDesc.x + 'px', transform: 'rotate('+ formDesc.angle + 'deg)'}">          
+      </div>
+      <div class="formContent"  :style="{width: formContent.width + 'px', height: formContent.height + 'px', top: formContent.y + 'px', left: formContent.x + 'px'  , transform:'rotate('+formContent.angle+'deg)', backgroundImage: 'url('+formContent.content+')', paddingTop: formContent.paddingTop + 'px'   ,paddingBottom: formContent.paddingBottom + 'px',paddingLeft: formContent.paddingLeft + 'px',paddingRight: formContent.paddingRight + 'px', fontSize: formContent.fontSize + 'px' , color: formContent.fontColor, fontFamily: formContent.fontFamily}">
+          <form class="clearfix">
+            <div v-for="(item,index) in componentContent" :key="index" class="clearfix">
+                <input-component v-if="item.type=='text'||item.type=='password'" class="clearfix" :style="{height: formContent.lineHeight + 'px'   }" :com-data="item"></input-component>
+                <textarea-component  v-if="item.type=='textarea'" class="clearfix" :style="{height: formContent.lineHeight + 'px'  }" :com-data="item"></textarea-component>
+                <radio-component v-if="item.type=='radio'||item.type=='checkbox'" class="clearfix" :style="{height: formContent.lineHeight + 'px'  }" :com-data="item"></radio-component>
+                <select-component v-if="item.type=='select'" class="clearfix" :style="{height: formContent.lineHeight + 'px'   }" :com-data="item"></select-component>
+                <upload-component v-if="item.type=='upload'" class="clearfix" :style="{height: formContent.lineHeight + 'px'   }" :com-data="item"></upload-component>
+                <submit-component v-if="item.type=='submit'" class="clearfix" :style="{height: formContent.lineHeight + 'px'   }" :com-data="item"></submit-component>
+            </div>
+          </form>
+      </div>
   </div>
 </template>
 <style scoped>
 .form {
-    width: 100%;
-    height: 100%;
-    background-repeat: no-repeat;
-    background-position: top center;
-    background-size: cover;
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: cover;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.formTitle > h1 {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  text-align: center;
+  /* line-height: 1.5; */
+  /* font-size: 30px; */
+  z-index: 99;
+}
+.formTitle {
+  background: transparent;
+  position: relative;
+}
+.formTitle > img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 99;
+}
+.formDesc {
+  overflow: hidden;
+  /* position: relative; */
+}
+.formDesc > p {
+  position: absolute;
+  /* text-indent: 2em; */
+  padding: 2px;
+  margin: 0 auto;
+  /* width: 100%; */
+  box-sizing: border-box;
+  /* line-height: 1.5; */
+  /* font-size: 30px; */
+  z-index: 98;
+  cursor: pointer;
+}
+.formDesc > img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 98;
+}
+.formContent {
+  background: transparent;
+  position: relative;
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: contain;
+  z-index: 97;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 </style>
 <script>
-import BGimg from '../assets/img/BGimg.jpg'
-import FormNameContent from '../assets/img/title_formtitleimg.png'
+import InputComponent from "../components/InputComponent";
+import RadioComponent from "../components/RadioComponent";
+import SelectComponent from "../components/SelectComponent";
+import SubmitComponent from "../components/SubmitComponent";
+import TextareaComponent from "../components/TextareaComponent";
+import UploadComponent from "../components/UploadComponent";
 export default {
-    data() {
-        return {
-            formData: {
-                activityName: "五一活动",
-                startTime: "20180430",
-                endTime: "20180502",
-                activityStatus: 0,
-                posterDesign: false,
-                form: {
-                    bgImgUrl: BGimg, //一个image url字符串,作报名表单背景图片
-                    formName: {
-                        type: "img", //type为text,则表单名称为文本,如果type为img,则表单名称为图片格式
-                        content: FormNameContent, //type为text,则content为文字,如果type为img,则表单名称为图片url
-                        fontSize: 18, //type为text,则fontSize为字体大小,如果type为img,则fontSize为null
-                        fontColor: "#aaaaaa", //字体颜色,type为img则为null,同上
-                        position: {
-                            //位置, 文本默认居中对齐, 图片可移动
-                            x: 100, //距离顶点向左为正,向右为负
-                            y: 200 //距离顶点向下为正,向上为负
-                        },
-                        size: {
-                            //大小, 文本默认水平居中垂直对齐,图片可缩放
-                            width: 100, //宽度
-                            height: 200 //高度
-                        },
-                        rotate: 0 //旋转角度,文本默认为0,图片可以旋转
-                    },
-                    formDesc: {
-                        type: "text", //type为text,则表单名称为文本,如果type为img,则表单名称为图片格式
-                        content: "报名表单简述", //type为text,则content为文字,如果type为img,则表单名称为图片url
-                        fontSize: 18, //type为text,则fontSize为字体大小,如果type为img,则fontSize为null
-                        fontColor: "#aaaaaa", //字体颜色,type为img则为null,同上
-                        position: {
-                            //位置, 文本默认居中对齐, 图片可移动
-                            x: 100, //距离顶点向左为正,向右为负
-                            y: 200 //距离顶点向下为正,向上为负
-                        },
-                        size: {
-                            //大小, 文本默认水平居中垂直对齐,图片可缩放
-                            width: 100, //宽度
-                            height: 200 //高度
-                        },
-                        rotate: 0 //旋转角度,文本默认为0,图片可以旋转
-                    },
-                    formContent: {
-                        formImgUrl: "url",
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                        paddingRight: 10,
-                        paddingLeft: 10,
-                        position: {
-                            x: 100, //距离顶点向左为正,向右为负
-                            y: 200 //距离顶点向下为正,向上为负
-                        },
-                        size: {
-                            //大小
-                            width: 100, //宽度
-                            height: 200 //高度
-                        },
-                        formitemMargin: 20, //表单项相隔距离
-                        content: [
-                            //表单项是按照数组顺序罗列的,位置也是都固定设置好的
-                            {
-                                type: "textfield", //单行文本,
-                                label: "单行文本名称",
-                                placeholder: "默认值",
-                                content: null
-                            },
-                            {
-                                type: "textarea", //多行文本,
-                                label: "多行文本名称",
-                                placeholder: "默认值",
-                                content: null
-                            },
-                            {
-                                type: "radio", //单选
-                                label: "单选名称",
-                                palceholder: "男",
-                                content: ["男", "女"]
-                            },
-                            {
-                                type: "checkbox", //多选
-                                label: "多选名称",
-                                palceholder: "广州",
-                                content: ["广州", "深圳", "东莞", "惠州"]
-                            },
-                            {
-                                type: "select", //下拉
-                                label: "下拉名称",
-                                palceholder: "请选择",
-                                content: ["广州", "深圳", "东莞", "惠州"]
-                            },
-                            {
-                                type: "uploadImg", //下拉
-                                label: "图片上传",
-                                palceholder: null,
-                                content: null
-                            },
-                            {
-                                type: "submitBtn", //提交按钮必须在表单内容最后一位,否则不能保存成功
-                                label: "提交",
-                                palceholder: "提交表单的url",
-                                content: null
-                            }
-                        ]
-                    }
-                }
-            }
+  data() {
+    return {
+      formInfo: {},
+      formBG: {},
+      formTitle: {},
+      formDesc: {},
+      formContent: {},
+      componentContent: [],
+      pxToRem: 0
+    };
+  },
+  components: {
+    InputComponent,
+    RadioComponent,
+    SelectComponent,
+    SubmitComponent,
+    TextareaComponent,
+    UploadComponent
+  },
+  methods: {
+    setRem(doc, win) {
+        var that = this;
+      var docEl = doc.documentElement,
+        resizeEvt =
+          "orientationchange" in window ? "orientationchange" : "resize",
+        recalc = function() {
+          var clientWidth = docEl.clientWidth;
+
+          console.log(clientWidth);
+          if (!clientWidth) return;
+
+          //这里是假设在320px宽度设计稿的情况下，1rem = 20px；
+          //可以根据实际需要修改
+          docEl.style.fontSize = 20 * (clientWidth / 320) + "px";
+          console.log("fontSize:", docEl.style.fontSize);
+          that.pxToRem = 20 * (clientWidth / 320);
         };
-    },
-    components: {
-        
-    },
-    methods: {},
-    mounted() {}
+      if (!doc.addEventListener) return;
+      win.addEventListener(resizeEvt, recalc, false);
+      doc.addEventListener("DOMContentLoaded", recalc, false);
+    }
+  },
+  mounted() {},
+  beforeMount() {
+    this.setRem(document, window);
+    var formId = this.$route.query.id;
+    this.$http
+      .get("/apis/common/one.json?type=form&id=" + formId)
+      .then(res => {
+        console.log(res);
+        if (res.data.data.status == 100) {
+          this.formBG = res.data.data.result.FformStyle.formBG;
+          this.formTitle = res.data.data.result.FformStyle.formTitle;
+          this.formDesc = res.data.data.result.FformStyle.formDesc;
+          this.formContent = res.data.data.result.FformStyle.formContent;
+          this.componentContent =
+            res.data.data.result.FformStyle.componentContent;
+          if (this.formDesc.type == "text") {
+            this.formDesc.content = this.formDesc.content
+              .replace(/\n/g, "<br>")
+              .replace(/ /g, "&nbsp;");
+          }
+        //   this.formTitle.height = this.formTitle.height/this.pxToRem;
+        //   this.formTitle.width = this.formTitle.width/this.pxToRem;
+        //   this.formTitle.x = this.formTitle.x/this.pxToRem;
+        //   this.formTitle.y = this.formTitle.y/this.pxToRem;
+        //   this.formDesc.height = this.formDesc.height/this.pxToRem;
+        //   this.formDesc.width = this.formDesc.width/this.pxToRem;
+        //   this.formDesc.x = this.formDesc.x/this.pxToRem;
+        //   this.formDesc.y = this.formDesc.y/this.pxToRem;
+        //   this.formContent.height = this.formContent.height/this.pxToRem;
+        //   this.formContent.width = this.formContent.width/this.pxToRem;
+        //   this.formContent.x = this.formContent.x/this.pxToRem;
+        //   this.formContent.y = this.formContent.y/this.pxToRem;
+        } else {
+          this.$alert(res.data.data.msg, "提示", {
+            confirmButtonText: "确定"
+          });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
 };
 </script>

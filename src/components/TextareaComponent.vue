@@ -3,14 +3,14 @@
     <!-- <label :for="componentData.id"  v-text="componentData.label" :style="{width: componentData.labelWidth + 'px'}"></label>
     <input type="text" :id="componentData.id" :style="{borderRadius: componentData.borderRadius+'px',width: 'calc( 100% - '+componentData.labelWidth+'px )'}"> -->
     <div class="content">
-    <label :for="comData.id"  v-text="comData.label" v-show="comData.label" :style="{width: comData.labelWidth + 'px'}"></label>
-    <textarea :id="comData.id" :model="comData.id" :value="comData.value" :placeholder="comData.placeholder" :style="{borderRadius: comData.borderRadius+'px',width: 'calc( 100% - '+comData.labelWidth+'px )',backgroundColor: comData.backgroundColor,height: comData.inputHeight+'px'}"></textarea>
+    <label :for="comData.id"  v-text="comData.label" v-show="comData.label" :style="{width: comData.labelWidth + 'px'}" style="text-align: center"></label>
+    <textarea :class="{textarea: !comData.borderShow}" :id="comData.id" :model="comData.id" :value="comData.value" :placeholder="comData.placeholder" :style="{borderRadius: comData.borderRadius+'px',width: 'calc( 100% - '+comData.labelWidth+'px )',backgroundColor: comData.backgroundColor,height: comData.inputHeight+'px'}"></textarea>
     </div>
   </div>
 
 </template>
 <style>
-textarea {
+.textarea {
   border: 0px;
   padding: 0 6px;
   /* color: white; */
