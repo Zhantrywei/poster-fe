@@ -119,14 +119,20 @@ export default {
       // this.$router.push({ name: "posterdesign", params: {row: JSON.stringify(row)} });
     },
     //修改表单
-    changeForm(row) {},
+    changeForm(row) {
+      // console.log(row);
+      var formId = row.FformId;
+      var activityId = row._id.$id;
+      this.$router.push({name: 'formdesign', params: {row: JSON.stringify(row)}});
+    },
     //修改海报
     changePoster(row) {},
     //预览表单
     previewForm(row) {
       if (row.FformId) {
-        var id = row.FformId;
-        this.$router.push({name: 'form', query: {id:id}});
+        var formId = row.FformId;
+        var activityId = row._id.$id;
+        this.$router.push({name: 'form', query: {formId:formId, activityId: activityId}});
       } else {
         this.$router.push({ name: "form" });
       }
@@ -258,10 +264,10 @@ export default {
       this.$http
         .get("/apis/common/list.json?type=activity")
         .then(function(res) {
-          console.log(res);
+          // console.log(res);
           if (res.data.data.status == 100) {
             that.tableData = res.data.data.result;
-            console.log("Array: ", res.data.data.result instanceof Array);
+            // console.log("Array: ", res.data.data.result instanceof Array);
           } else {
             that.$alert(res.data.data.msg, "提示", {
               confirmButtonText: "确定"

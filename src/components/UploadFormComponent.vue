@@ -2,7 +2,7 @@
   <div class="uploadComponent" @dblclick="editComponent(comData.index)" :style="{backgroundColor: comData.backgroundColor}">
     <label :for="comData.id"  v-text="comData.label" v-show="comData.label" :style="{width: comData.labelWidth + 'px'}"  style="text-align: center"></label>
     <!-- <el-upload :action="uploadUrl"  list-type="picture" :limit="1" :data="uploadData" :auto-upload="false" :on-change="changeImgFile" ref="uploadImg" :on-success="successImgFile" :name="comData.id"> -->
-    <el-upload :action="uploadUrl" :show-file-list="false" :disabled="true">
+    <el-upload :action="uploadUrl" :data="uploadData" :auto-upload="false" :show-file-list="false" :on-change="changeFile" ref="upload" :name="comData.id" :on-success="successFile" >
       <el-button size="small" type="primary" @click="upload">{{comData.value}}</el-button>
       <div slot="tip" class="el-upload__tip">{{comData.placeholder}}</div>
     </el-upload>
@@ -80,21 +80,6 @@ export default {
     };
   },
   methods: {
-    // deleteComponent(e){
-    //   e.preventDefault();
-    //   console.log("deleteComponent")
-    //   this.operationShow = !this.operationShow;
-    // },
-    // upComponent(e){
-    //   e.preventDefault();
-    //   console.log("upComponent")
-    //   this.operationShow = !this.operationShow;
-    // },
-    // downComponent(e){
-    //   e.preventDefault();
-    //   console.log("downComponent")
-    //   this.operationShow = !this.operationShow;
-    // }
     editComponent(index) {
       event.preventDefault();
       var index = index - 1;
@@ -104,31 +89,37 @@ export default {
       var msg = 6;
       Bus.$emit("getActive", msg);
     },
-    // //上传图片
-    // changeImgFile(file, fileList) {
-    //   console.log(file);
-    //   console.log(name);
-    //   var that = this;
-    //   //this.imageUrl = URL.createObjectURL(file.raw);
-    //   var reader = new FileReader();
-    //   reader.readAsDataURL(file.raw);
-    //   reader.onload = function(e) {
-    //     // console.log("this-result: ", this.result); // 这个就是base64编码了
-    //     that.uploadData.img = this.result;
-    //     that.uploadData.directory = comData.id;
-    //     that.$refs.uploadImg.submit();
-    //   };
-    // },
-    // //上传图片成功之后返回显示图片
-    // successImgFile(res, file, fileList) {
-    //   console.log("res", res);
-    //   if (res.data.status == 100) {
-    //     this.$alert("上传成功", "提示", {
-    //       confirmButtonText: "确定",
-    //       callback: action => {}
-    //     });
-    //   }
-    // }
+    //上传表单背景设计
+    changeFile(file, fileList) {
+      // console.log(file);
+      // console.log(name);
+      var that = this;
+      //this.imageUrl = URL.createObjectURL(file.raw);
+      var reader = new FileReader();
+      reader.readAsDataURL(file.raw);
+      reader.onload = function(e) {
+        // console.log("this-result: ", this.result); // 这个就是base64编码了
+        that.uploadData.img = this.result;
+        that.uploadData.directory = that.comData.id;
+        that.$refs.upload.submit();
+      };
+    },
+    //上传表单背景设计成功之后返回显示图片
+    successFile(res, file, fileList) {
+      console.log("res", res);
+      if (res.data.status == 100) {
+        this.$alert("上传成功","提示",{
+          confirmButtonText: "确定"
+        })
+      }
+      var msg = {
+        id: this.comData.id,
+        type: 'upload',
+        value: res.data.result
+      }
+      Bus.$emit("getFormData",JSON.stringify(msg))
+
+    },
     upload(e){
       e.preventDefault();
     }
@@ -136,4 +127,24 @@ export default {
   mounted() {}
 };
 </script>
+
+<style>
+.el-message-box {
+    display: inline-block;
+    width: 200px;
+    padding-bottom: 10px;
+    vertical-align: middle;
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #ebeef5;
+    font-size: 18px;
+    -webkit-box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+    text-align: left;
+    overflow: hidden;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+</style>
+
 

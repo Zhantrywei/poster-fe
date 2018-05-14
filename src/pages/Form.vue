@@ -86,13 +86,33 @@
   overflow: hidden;
 }
 </style>
+<style>
+.el-message-box {
+  display: inline-block;
+  width: 200px;
+  padding-bottom: 10px;
+  vertical-align: middle;
+  background-color: #fff;
+  border-radius: 4px;
+  border: 1px solid #ebeef5;
+  font-size: 18px;
+  -webkit-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  text-align: left;
+  overflow: hidden;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+</style>
+
 <script>
 import InputComponent from "../components/InputComponent";
 import RadioComponent from "../components/RadioComponent";
 import SelectComponent from "../components/SelectComponent";
-import SubmitComponent from "../components/SubmitComponent";
+import SubmitComponent from "../components/SubmitFormComponent";
 import TextareaComponent from "../components/TextareaComponent";
-import UploadComponent from "../components/UploadComponent";
+import UploadComponent from "../components/UploadFormComponent";
+import Bus from "../assets/js/bus";
 export default {
   data() {
     return {
@@ -102,7 +122,10 @@ export default {
       formDesc: {},
       formContent: {},
       componentContent: [],
-      pxToRem: 0
+      pxToRem: 0,
+      formData: [],
+      formId: "",
+      activityId: ""
     };
   },
   components: {
@@ -115,7 +138,7 @@ export default {
   },
   methods: {
     setRem(doc, win) {
-        var that = this;
+      var that = this;
       var docEl = doc.documentElement,
         resizeEvt =
           "orientationchange" in window ? "orientationchange" : "resize",
@@ -134,12 +157,140 @@ export default {
       if (!doc.addEventListener) return;
       win.addEventListener(resizeEvt, recalc, false);
       doc.addEventListener("DOMContentLoaded", recalc, false);
+    },
+    checkCookie() {
+      window.location.href = "http://xbl.youban.com/";
     }
   },
-  mounted() {},
+  mounted() {
+    Bus.$on("getFormData", msg => {
+      console.log(msg);
+      var msg = JSON.parse(msg);
+      var flag = 0;
+      var index = -1;
+      if (msg.type != "checkbox") {
+        //先检测是否有这个id
+        if (this.formData.length != 0) {
+          for (var i = 0; i < this.formData.length; i++) {
+            if (msg.id == this.formData[i].id) {
+              flag = 1;
+              index = i;
+              break;
+            }
+          }
+        }
+        if (flag == 1) {
+          //flag = 1说明有相同的
+          if (index != -1) {
+            this.formData[index].value = msg.value;
+          }
+        } else {
+          this.formData.push(msg);
+        }
+      } else {
+        if (this.formData.length != 0) {
+          for (var i = 0; i < this.formData.length; i++) {
+            if (msg.id == this.formData[i].id) {
+              flag = 1;
+              index = i;
+              break;
+            }
+          }
+        }
+        if (flag == 1) {
+          //flag = 1说明有相同的
+          if (index != -1) {
+            //非第一个
+            console.log("2msg: ", msg);
+            // debugger
+            if (msg.checked) {
+              //如果有被选的,查出来value有没有,有就不变,没有就加入
+              var checkedFlag = 0;
+              for (var i = 0; i < this.formData[index].value.length; i++) {
+                if (msg.value == this.formData[index].value[i]) {
+                  checkedFlag = 1; //证明已经在formData里面的value有这个值了
+                  break;
+                }
+              }
+              if (checkedFlag != 1) {
+                this.formData[index].value.push(msg.value);
+              }
+            } else {
+              //如果没有被轩的,查出来value有没有,有就删除,没有就不变
+              // debugger
+              var checkedFlag = 0;
+              var checkedIndex = -1;
+              for (var i = 0; i < this.formData[index].value.length; i++) {
+                if (msg.value == this.formData[index].value[i]) {
+                  checkedFlag = 1;
+                  checkedIndex = i;
+                  break;
+                }
+              }
+              if (checkedFlag == 1) {
+                console.log("start: ", this.formData[index].value);
+                this.formData[index].value.splice(checkedIndex, 1);
+                console.log("end: ", this.formData[index].value);
+              }
+            }
+          }
+        } else {
+          //说明是第一个
+          console.log("msg: ", msg);
+          msg = {
+            id: msg.id,
+            type: "checkbox",
+            value: [msg.value]
+          };
+          this.formData.push(msg);
+        }
+      }
+    });
+    Bus.$on("submitFormData", () => {
+      // debugger
+      console.log("formData: ", this.formData);
+      if (this.formData.length == 0) {
+        this.$alert("报名表单为空", "提示", {
+          confirmButtonText: "确定",
+          callback: action => {}
+        });
+        return false;
+      } else {
+        let formData = new FormData();
+        formData.append("form_data", JSON.stringify(this.formData));
+        formData.append("form_id", this.formId);
+        formData.append("activity_id", this.activityId);
+
+        this.$http
+          .post("/apis/enroll/sign.json", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          })
+          .then(res => {
+            console.log(res);
+            if (res.data.data.status == 100) {
+              this.$alert("报名成功", "提示", {
+                confirmButtonText: "确定",
+                callback: action => {
+                  // window.redirect("http://xbl.youban.com/")
+                  location.reload();
+                }
+              });
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    });
+  },
   beforeMount() {
-    this.setRem(document, window);
-    var formId = this.$route.query.id;
+    // this.setRem(document, window);
+    var formId = this.$route.query.formId;
+    var activityId = this.$route.query.activityId;
+    this.formId = formId;
+    this.activityId = activityId;
     this.$http
       .get("/apis/common/one.json?type=form&id=" + formId)
       .then(res => {
@@ -156,18 +307,18 @@ export default {
               .replace(/\n/g, "<br>")
               .replace(/ /g, "&nbsp;");
           }
-        //   this.formTitle.height = this.formTitle.height/this.pxToRem;
-        //   this.formTitle.width = this.formTitle.width/this.pxToRem;
-        //   this.formTitle.x = this.formTitle.x/this.pxToRem;
-        //   this.formTitle.y = this.formTitle.y/this.pxToRem;
-        //   this.formDesc.height = this.formDesc.height/this.pxToRem;
-        //   this.formDesc.width = this.formDesc.width/this.pxToRem;
-        //   this.formDesc.x = this.formDesc.x/this.pxToRem;
-        //   this.formDesc.y = this.formDesc.y/this.pxToRem;
-        //   this.formContent.height = this.formContent.height/this.pxToRem;
-        //   this.formContent.width = this.formContent.width/this.pxToRem;
-        //   this.formContent.x = this.formContent.x/this.pxToRem;
-        //   this.formContent.y = this.formContent.y/this.pxToRem;
+          //   this.formTitle.height = this.formTitle.height/this.pxToRem;
+          //   this.formTitle.width = this.formTitle.width/this.pxToRem;
+          //   this.formTitle.x = this.formTitle.x/this.pxToRem;
+          //   this.formTitle.y = this.formTitle.y/this.pxToRem;
+          //   this.formDesc.height = this.formDesc.height/this.pxToRem;
+          //   this.formDesc.width = this.formDesc.width/this.pxToRem;
+          //   this.formDesc.x = this.formDesc.x/this.pxToRem;
+          //   this.formDesc.y = this.formDesc.y/this.pxToRem;
+          //   this.formContent.height = this.formContent.height/this.pxToRem;
+          //   this.formContent.width = this.formContent.width/this.pxToRem;
+          //   this.formContent.x = this.formContent.x/this.pxToRem;
+          //   this.formContent.y = this.formContent.y/this.pxToRem;
         } else {
           this.$alert(res.data.data.msg, "提示", {
             confirmButtonText: "确定"

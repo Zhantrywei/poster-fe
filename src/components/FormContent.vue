@@ -1,5 +1,5 @@
 <template>
-    <div @dblclick.self="contentDBClick" class="form-content clearfix borderShow" id="formContent" :style="{width: formContent.width+'px', height: formContent.height+'px', top: formContent.y+'px', left: formContent.x+'px', transform:'rotate('+formContent.angle+'deg)', backgroundImage: 'url('+formContent.content+')', paddingTop: formContent.paddingTop+'px',paddingBottom: formContent.paddingBottom + 'px',paddingLeft: formContent.paddingLeft + 'px',paddingRight: formContent.paddingRight + 'px', fontSize: formContent.fontSize+'px', color: formContent.fontColor, fontFamily: formContent.fontFamily}" @mousedown.self="moveForm">
+    <div @dblclick.self="contentDBClick" class="form-content clearfix borderShow" id="formContent" :style="{backgroundColor: formContent.bgColor,width: formContent.width+'px', height: formContent.height+'px', top: formContent.y+'px', left: formContent.x+'px', transform:'rotate('+formContent.angle+'deg)', backgroundImage: 'url('+formContent.content+')', paddingTop: formContent.paddingTop+'px',paddingBottom: formContent.paddingBottom + 'px',paddingLeft: formContent.paddingLeft + 'px',paddingRight: formContent.paddingRight + 'px', fontSize: formContent.fontSize+'px', color: formContent.fontColor, fontFamily: formContent.fontFamily}" @mousedown.self="moveForm">
         <!-- <img :src="formContent.content" :width="formContent.width" :height="formContent.height" :style="{top: formContent.y + 'px',left: formContent.x + 'px', transform: 'rotate('+ formContent.angle + 'deg)'}" @mousedown="moveDesc"> -->
         <!-- <form v-for="(item,index) in componentContent" :key="index">
           <div v-if="item.type=='text'||item.type=='password'" class="clearfix" :class="{borderShow: item.index == borderIndex}">
@@ -128,9 +128,9 @@ export default {
   },
   mounted() {
     var that = this;
-    console.log("test: ", this.formContent);
+    // console.log("test: ", this.formContent);
     // Bus.$on("getComponentContent", msg => (this.componentContent = msg));
-    console.log("componentContent: ", this.componentContent);
+    // console.log("componentContent: ", this.componentContent);
   },
   beforeMount() {
     Bus.$on("getComponentContent", msg => (this.componentContent = msg));

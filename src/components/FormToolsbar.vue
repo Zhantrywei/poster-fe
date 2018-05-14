@@ -32,7 +32,7 @@
       <el-collapse-item title="表单背景设计" name="2">
         <el-form :model="formBG" label-width="80px">
           <el-form-item label="背景图片">
-            <el-upload class="upload-demo" action="/apis/common/uploadimg.debug" list-type="picture" :data="uploadData" :limit="1" :auto-upload="false" name="formBGImg"  :on-change="changeBGFile" ref="uploadBG" :on-success="successBGFile">
+            <el-upload class="upload-demo" action="/apis/common/uploadimg.debug" list-type="picture" :data="uploadData" :limit="1" :auto-upload="false" name="formBGImg"  :on-change="changeBGFile" ref="uploadBG" :on-success="successBGFile" :on-remove="removeBGFile">
               <el-button size="small" type="primary">点击上传</el-button>
               <span style="margin-left: 10px;" slot="tip" class="el-upload__tip">建议上传png文件，且不超过500kb</span>
             </el-upload>
@@ -73,7 +73,7 @@
           </el-form-item>
           <!-- 标题为图片 -->
           <el-form-item label="标题图片" v-show="formTitle.type == 'img'">
-            <el-upload class="upload-demo" action="/apis/common/uploadimg.debug" :data="uploadData" list-type="picture" :limit="1" :auto-upload="false" :on-change="changeTitleFile" ref="uploadTitle" :on-success="successTitleFile" name="formTitleImg">
+            <el-upload class="upload-demo" action="/apis/common/uploadimg.debug" :data="uploadData" list-type="picture" :limit="1" :auto-upload="false" :on-change="changeTitleFile" ref="uploadTitle" :on-success="successTitleFile" name="formTitleImg" :on-remove="removeTitleFile">
               <el-button size="small" type="primary">点击上传</el-button>
               <span style="margin-left: 10px;" slot="tip" class="el-upload__tip">建议上传png文件，且不超过500kb</span>
             </el-upload>
@@ -143,7 +143,7 @@
           </el-form-item>
           <!-- 简述为图片 -->
           <el-form-item label="简述图片" v-show="formDesc.type == 'img'">
-            <el-upload class="upload-demo" action="/apis/common/uploadimg.debug" list-type="picture" :limit="1" :data="uploadData" :auto-upload="false" :on-change="changeDescFile" ref="uploadDesc" :on-success="successDescFile" name="formDescImg">
+            <el-upload class="upload-demo" action="/apis/common/uploadimg.debug" list-type="picture" :limit="1" :data="uploadData" :auto-upload="false" :on-change="changeDescFile" ref="uploadDesc" :on-success="successDescFile" name="formDescImg" :on-remove="removeDescFile">
               <el-button size="small" type="primary">点击上传</el-button>
               <span style="margin-left: 10px;" slot="tip" class="el-upload__tip">建议上传png文件，且不超过500kb</span>
             </el-upload>
@@ -186,10 +186,14 @@
       <el-collapse-item title="表单基础设计" name="5">
         <el-form :model="formContent" label-width="80px">   
           <el-form-item label="表单图片">
-            <el-upload class="upload-demo" action="/apis/common/uploadimg.debug" list-type="picture" :limit="1" :data="uploadData" :auto-upload="false" :on-change="changeFormFile" ref="uploadForm" :on-success="successFormFile" name="formContentImg">
+            <el-upload class="upload-demo" action="/apis/common/uploadimg.debug" list-type="picture" :limit="1" :data="uploadData" :auto-upload="false" :on-change="changeFormFile" ref="uploadForm" :on-success="successFormFile" name="formContentImg" :on-remove="removeFormFile">
               <el-button size="small" type="primary">点击上传</el-button>
               <span style="margin-left: 10px;" slot="tip" class="el-upload__tip">建议上传png文件，且不超过500kb</span>
             </el-upload>
+          </el-form-item>
+          <el-form-item label="表单背景" style="margin-bottom: 0px">
+            <el-color-picker v-model="formContent.bgColor" show-alpha :predefine="predefineColors" @active-change="sendFormBG" @change="sendFormContent">
+            </el-color-picker>
           </el-form-item>
           <el-form-item label="表单大小">
             <div style="margin-top: 40px;">
@@ -388,7 +392,7 @@
               <!-- <el-input v-model="radioCom.id" type="text"></el-input> -->
               <span v-text="radioCom.id"></span>
             </el-form-item> 
-            <el-form-item label="默认值">
+            <el-form-item label="默认值" v-if="radioCom.type == 'radio'">
               <el-input v-model="radioCom.value" type="text"></el-input>
             </el-form-item>
             <el-form-item label="value">
@@ -470,16 +474,57 @@
           </el-form>
         </div>
         <!-- submit类型 -->
-        <div class="submit" v-show="submitShow"></div>
+        <div class="submit" v-show="submitShow">
+          <el-form ref="form" :model="submitCom" label-width="80px">
+            <el-form-item label="序号">
+              <span v-text="submitCom.index"></span>
+            </el-form-item>
+            <el-form-item label="类型">
+              <span v-text="submitCom.type"></span>
+            </el-form-item>
+            <el-form-item label="控件ID">
+              <span v-text="submitCom.id"></span>
+            </el-form-item>
+            <el-form-item label="Label">
+              <el-input v-model="submitCom.label" type="text"></el-input>
+            </el-form-item>
+            <el-form-item label="宽度">
+              <el-input v-model="submitCom.width" style="width: 50%;" type="number">
+                <template slot="append">px</template>
+              </el-input>
+            </el-form-item> 
+            <el-form-item label="高度">
+              <el-input v-model="submitCom.height" style="width: 50%;" type="number">
+                <template slot="append">px</template>
+              </el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="success" icon="el-icon-check" circle @click="submitComSubmit(submitCom)"></el-button>
+              <el-button type="danger" icon="el-icon-delete" circle @click="submitComDelete(submitCom)"></el-button>
+              <el-button type="primary" icon="el-icon-arrow-up" circle @click="submitComUp(submitCom)"></el-button>
+              <el-button type="primary" icon="el-icon-arrow-down" circle @click="submitComDown(submitCom)"></el-button>
+            </el-form-item>
+          </el-form>
+        </div>
       </div>
 
       <div class="btn">
-        <button class="savebtn" @click.self="addActivity">保存</button>
+        <button class="savebtn" @click.self="addActivity" v-if="addBtnShow">新增</button>
+        <button class="savebtn" @click.self="saveActivity" v-else>保存</button>
         <button class="resetbtn" @click.self="resetActivity">清空</button>
       </div>
-      <div class="qrcode" v-show="qrcodeShow">
-        <!-- <qrcode class="qrcodeDemo"></qrcode> -->
-      </div>
+
+      <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" @close = "closeDialog">
+        <!-- <div class="qrcode"> -->
+          <!-- <qrcode size="200" bg-color="#FFFFFF" fg-color="#000000" val="https://github.com/"></qrcode> -->
+          <!-- <div id="qrcode" ref="qrcode" v-show="qrcodeShow"></div> -->
+        <!-- </div> -->
+        <qrcode-vue :value="value" :size="size" level="H"></qrcode-vue>
+        <span slot="footer" class="dialog-footer">
+        <!-- <el-button type="primary" @click="dialogVisible = false">确 定</el-button> -->
+  </span>
+</el-dialog>
+      
   </div>
 </template>
 <style scoped>
@@ -551,6 +596,11 @@ header {
   font-weight: 700;
 }
 </style>
+<style>
+.el-dialog__body {
+  text-align: center;
+}
+</style>
 
 
 <script>
@@ -562,6 +612,8 @@ import TextCom from "./formComponentEdit/textCom";
 import PasswordCom from "./formComponentEdit/passwordCom";
 import TextareaCom from "./formComponentEdit/textareaCom";
 import common from "../assets/js/common";
+// import QRCode from 'qrcodejs2'
+import QrcodeVue from "qrcode.vue";
 export default {
   name: "toolsbar",
   data() {
@@ -701,6 +753,7 @@ export default {
       },
       formContent: {
         content: "",
+        bgColor: "",
         fontFamily: "微软雅黑",
         fontSize: 15,
         fontColor: "#000",
@@ -822,13 +875,32 @@ export default {
         img: "",
         directory: ""
       },
-      qrcodeShow: false
+      submitShow: false,
+      submitCom: {
+        id: "",
+        model: "",
+        index: "",
+        label: "",
+        value: "",
+        type: "submit",
+        width: 100,
+        height: 80
+      },
+      qrcodeShow: false,
+      formId: "",
+      activityId: "",
+      dialogVisible: false,
+      value: "",
+      size: 200,
+      addBtnShow: true
     };
   },
+  props: ["changeFormData"],
   components: {
     TextCom,
     TextareaCom,
-    PasswordCom
+    PasswordCom,
+    QrcodeVue
   },
   watch: {
     "inputCom.index": {
@@ -934,6 +1006,7 @@ export default {
         };
         this.inputCom = inputCom;
         this.inputComShow = true;
+        this.submitShow = false;
         this.uploadShow = false;
         this.radioShow = false;
         this.componentContent.push(inputCom);
@@ -957,6 +1030,7 @@ export default {
         };
         this.radioCom = radioCom;
         this.radioShow = true;
+        this.submitShow = false;
         this.inputComShow = false;
         this.uploadShow = false;
         this.componentContent.push(radioCom);
@@ -976,9 +1050,28 @@ export default {
         };
         this.uploadCom = uploadCom;
         this.uploadShow = true;
+        this.submitShow = false;
         this.radioShow = false;
         this.inputComShow = false;
         this.componentContent.push(uploadCom);
+        this.sendComponentContent();
+      } else if (this.formComponent.type == "submit") {
+        var submitCom = {
+          index: this.componentContent.length + 1,
+          id: this.formComponent.id,
+          model: this.formComponent.id,
+          type: this.formComponent.type,
+          label: this.formComponent.label,
+          value: "",
+          width: this.submitCom.width,
+          height: this.submitCom.height
+        };
+        this.submitCom = submitCom;
+        this.submitShow = true;
+        this.uploadShow = false;
+        this.radioShow = false;
+        this.inputComShow = false;
+        this.componentContent.push(submitCom);
         this.sendComponentContent();
       }
       this.formComponent = {
@@ -1288,10 +1381,98 @@ export default {
         return false;
       }
     },
+    //submitCom按钮
+    submitComSubmit(submitCom) {
+      var index = submitCom.index - 1;
+      console.log("submitCom: ", submitCom);
+      this.componentContent[index] = JSON.parse(JSON.stringify(submitCom));
+      console.log("submit component: ", this.componentContent);
+      this.sendComponentContent();
+    },
+    submitComDelete(submitCom) {
+      console.log("submitCom: ", submitCom);
+      var index = submitCom.index - 1;
+      // this.componentContent.splice(index, 1);
+      // 数组截取，拿index前面的数组不变
+      if (index != 0) {
+        var beforeArray = this.componentContent.slice(0, index);
+      } else {
+        var beforeArray = [];
+      }
+      var afterArray = this.componentContent.slice(index + 1);
+      afterArray.forEach(function(item) {
+        item.index--;
+      });
+      this.componentContent = beforeArray.concat(afterArray);
+      console.log("delete: ", this.componentContent);
+      this.sendComponentContent();
+      if (this.componentContent.length == 0) {
+        this.submitComShow = false;
+        this.submitCom = {
+          id: "",
+          label: "",
+          index: "",
+          type: "",
+          value: "",
+          placeholder: "请输入内容",
+          borderRadius: 4,
+          labelWidth: 50,
+          backgroundColor: "#0F5BAA",
+          inputHeight: 30
+        };
+        alert("表单已空");
+      } else {
+        this.submitCom = JSON.parse(
+          JSON.stringify(
+            this.componentContent[this.componentContent.length - 1]
+          )
+        );
+      }
+    },
+    submitComUp(submitCom) {
+      console.log("submitCom: ", submitCom.index);
+      var index = submitCom.index - 1;
+      if (index <= 0) {
+        alert("不能再向上移动了");
+        return false;
+      } else {
+        var beforeIndex = index - 1;
+        var temp = JSON.parse(
+          JSON.stringify(this.componentContent[beforeIndex])
+        );
+        this.componentContent[beforeIndex] = JSON.parse(
+          JSON.stringify(this.componentContent[index])
+        );
+        this.componentContent[index] = temp;
+        console.log("up component: ", this.componentContent);
+        this.submitCom.index -= 1;
+        this.sendComponentContent();
+      }
+    },
+    submitComDown(submitCom) {
+      console.log("submitCom: ", submitCom.index);
+      var index = submitCom.index - 1;
+      if (index + 1 < this.componentContent.length) {
+        var afterIndex = index + 1;
+        var temp = JSON.parse(
+          JSON.stringify(this.componentContent[afterIndex])
+        );
+        this.componentContent[afterIndex] = JSON.parse(
+          JSON.stringify(this.componentContent[index])
+        );
+        this.componentContent[index] = temp;
+        console.log("down component: ", this.componentContent);
+        this.submitCom.index += 1;
+        this.sendComponentContent();
+      } else {
+        alert("不能再向下移动了");
+        return false;
+      }
+    },
 
     //设置FormContent信息
     sendComponentContent() {
-      console.log("component: ", this.componentContent);
+      // console.log("component: ", this.componentContent);
       var msg = JSON.parse(JSON.stringify(this.componentContent));
       Bus.$emit("getComponentContent", msg); //触发getComponentContent事件,这个在FormPreview.vue里面
     },
@@ -1342,6 +1523,7 @@ export default {
               if (res.data.data.status == 100) {
                 console.log("新增表单返回的表单id: ", res.data.data.result);
                 var formId = res.data.data.result;
+                that.formId = formId;
                 var activityData = new FormData();
                 activityData.append("name", that.activityInfo.activityName);
                 activityData.append("start_time", that.activityInfo.startTime);
@@ -1368,6 +1550,29 @@ export default {
                     console.log("formId: ", formId);
                     var activityId = res.data.data.result;
                     console.log("activityId: ", activityId);
+                    that.activityId = activityId;
+                    that.$alert("新增成功,请确定后扫码进入", "提示", {
+                      confirmButtonText: "确定",
+                      callback: action => {
+                        // var qrcode = new QRCode(document.getElementById("qrcode"),{
+                        //   width: 200,
+                        //   height: 200
+                        // });
+                        // var qrcodeUrl = 'http://192.168.8.200:8080/form?formId='+that.formId+"&activityId="+that.activityId;
+                        // qrcode.makeCode(qrcodeUrl)
+                        // that.qrcode(that.formId,that.activityId)
+                        // that.qrcodeShow = true;
+                        that.value =
+                          "http://192.168.8.200:8080/form?formId=" +
+                          that.formId +
+                          "&activityId=" +
+                          that.activityId;
+                        that.dialogVisible = true;
+                        console.log("生成二维码: ", that.qrcodeShow);
+                      }
+                    });
+                    // that.qrcode(that.formId,that.activityId)
+                    // that.dialogVisible = true;
                   })
                   .catch(function(err) {
                     console.log("新增活动返回的错误: ", err);
@@ -1378,12 +1583,6 @@ export default {
               } else {
                 that.$alert(res.data.data.msg, "提示", {
                   confirmButtonText: "确定"
-                  // callback: action => {
-                  //   this.$message({
-                  //     type: "info",
-                  //     message: `action: ${action}`
-                  //   });
-                  // }
                 });
               }
             })
@@ -1399,7 +1598,277 @@ export default {
       });
     },
     //清空表单设计
-    resetActivity() {},
+    resetActivity() {
+      this.activeNames = ["1"];
+      this.activityInfo = {
+        activityName: " ",
+        startTime: "",
+        endTime: "",
+        posterDesignStatus: false
+      };
+      this.formBG = {
+        bgImgUrl: "",
+        bgColor: "#fff"
+      };
+      this.formTitle = {
+        //文本标题
+        type: "text",
+        content: "",
+        fontFamily: "黑体",
+        fontSize: 32,
+        fontColor: "#C71585",
+        width: null,
+        height: null,
+        x: 0,
+        y: 0,
+        angle: 0
+        // //图片标题
+        // type: "img",
+        // content: ActivityTitle,
+        // fontFamily: null,
+        // fontSize: null,
+        // fontColor: null,
+        // width: 245,
+        // height: 145,
+        // x: 65,
+        // y: 4,
+        // angle: 0
+      };
+      this.formDesc = {
+        //文本描述
+        type: "text",
+        content: "",
+        fontFamily: "黑体",
+        fontSize: 18,
+        fontColor: "#C71585",
+        width: null,
+        height: null,
+        x: 0,
+        y: 0,
+        angle: 0
+        //图片描述
+        // type: "img",
+        // content: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1524650893445&di=652b69f04ef1801032235485d88ee824&imgtype=0&src=http%3A%2F%2Fwww.soft711.com%2Fuploadfile%2F2014%2F0217%2F20140217020553126.png",
+        // fontFamily: null,
+        // fontSize: null,
+        // fontColor: null,
+        // width: 100,
+        // height: 100,
+        // x: 50,
+        // y: 80,
+        // angle: 30
+      };
+      this.formContent = {
+        content: "",
+        bgColor: "",
+        fontFamily: "微软雅黑",
+        fontSize: 15,
+        fontColor: "#000",
+        width: 280,
+        height: 392,
+        x: 49,
+        y: 145,
+        angle: 0,
+        paddingTop: 0,
+        paddingBottom: 0,
+        paddingLeft: 11,
+        paddingRight: 11,
+        lineHeight: ""
+      };
+      this.formComponent = {
+        id: "",
+        label: "",
+        type: ""
+      };
+      (this.componentContent = []),
+        (this.inputComShow = false),
+        (this.inputCom = {
+          index: "",
+          type: "text", //password,text
+          label: "",
+          model: "",
+          id: "",
+          value: "",
+          placeholder: "请输入内容",
+          borderRadius: 4,
+          labelWidth: 50,
+          backgroundColor: "",
+          inputHeight: 30,
+          borderShow: true
+        }),
+        (this.radioShow = false);
+      this.radioCom = {
+        id: "",
+        model: "",
+        index: "",
+        label: "",
+        value: "",
+        type: "radio",
+        // values: [{ value: "boy", text: "男" }, { value: "girl", text: "女" }],
+        values: [],
+        labelWidth: 50,
+        // backgroundColor: "#0F5BAA",
+        inputHeight: 30
+      };
+      this.radioItem = {
+        value: "",
+        text: ""
+      };
+      (this.uploadShow = false),
+        (this.uploadCom = {
+          id: "",
+          model: "",
+          index: "",
+          label: "",
+          value: "",
+          type: "upload",
+          labelWidth: 50
+        });
+      (this.submitShow = false),
+        (this.uploadData = {
+          img: "",
+          directory: ""
+        });
+      (this.submitShow = false),
+        (this.submitCom = {
+          id: "",
+          model: "",
+          index: "",
+          label: "",
+          value: "",
+          type: "submit",
+          width: 100,
+          height: 80
+        });
+      this.qrcodeShow = false;
+      this.sendFormBG();
+      this.sendFormTitle();
+      this.sendFormDesc();
+      this.sendFormContent();
+      this.sendComponentContent();
+    },
+    //修改保存表单设计
+    saveActivity() {
+      var that = this;
+      if (this.activityInfo.startTime > this.activityInfo.endTime) {
+        console.log("开始时间: ", this.activityInfo.startTime);
+        console.log("结束时间: ", this.activityInfo.endTime);
+        that.$alert("活动时间错误", "提示", {
+          confirmButtonText: "确定",
+          callback: action => {
+            this.activeNames = ["1"];
+          }
+        });
+        return false;
+      }
+      this.$refs["activityInfo"].validate(valid => {
+        if (valid) {
+          var Fname = this.activityInfo.activityName + "表单";
+          var Fstatus = 1;
+          var formStyle = {
+            //表单背景
+            formBG: this.formBG,
+            formTitle: this.formTitle,
+            formDesc: this.formDesc,
+            formContent: this.formContent,
+            componentContent: this.componentContent
+          };
+          console.log("fname: ", Fname);
+          console.log("Fstatus: ", Fstatus);
+          console.log("formStyle: ", JSON.stringify(formStyle));
+          // var that = this;
+          // debugger;
+          let formData = new FormData();
+          formData.append("name", Fname);
+          formData.append("status", Fstatus);
+          formData.append("form_style", JSON.stringify(formStyle));
+          formData.append("id", this.formId);
+
+          this.$http
+            .post("/apis/form/insert.json", formData, {
+              headers: {
+                "Content-Type": "multipart/form-data"
+              }
+            })
+            .then(function(res) {
+              if (res.data.data.status == 100) {
+                // console.log("修改表单返回的表单id: ", res.data.data.result);
+                // var formId = res.data.data.result;
+                // that.formId = formId;
+                var activityData = new FormData();
+                activityData.append("name", that.activityInfo.activityName);
+                activityData.append("start_time", that.activityInfo.startTime);
+                activityData.append("end_time", that.activityInfo.endTime);
+                activityData.append("summary", "");
+                activityData.append("form_id", that.formId);
+                activityData.append("id", that.activityId);
+                if (that.activityInfo.posterDesignStatus) {
+                  activityData.append("poster_sts", 0);
+                  activityData.append("assist_sts", 1);
+                } else {
+                  activityData.append("poster_sts", -1);
+                  activityData.append("assist_sts", -1);
+                }
+                activityData.append("status", 0);
+                console.log("activityData: ", activityData);
+                that.$http
+                  .post("/apis/activity/insert.json", activityData, {
+                    headers: {
+                      "Content-Type": "multipart/form-data"
+                    }
+                  })
+                  .then(function(res) {
+                    console.log("修改活动返回的数据: ", res);
+                    // console.log("formId: ", formId);
+                    // var activityId = res.data.data.result;
+                    // console.log("activityId: ", activityId);
+                    // that.activityId = activityId
+                    that.$alert("修改成功,请确定后扫码进入", "提示", {
+                      confirmButtonText: "确定",
+                      callback: action => {
+                        // var qrcode = new QRCode(document.getElementById("qrcode"),{
+                        //   width: 200,
+                        //   height: 200
+                        // });
+                        // var qrcodeUrl = 'http://192.168.8.200:8080/form?formId='+that.formId+"&activityId="+that.activityId;
+                        // qrcode.makeCode(qrcodeUrl)
+                        // that.qrcode(that.formId,that.activityId)
+                        // that.qrcodeShow = true;
+                        that.value =
+                          "http://192.168.8.200:8080/form?formId=" +
+                          that.formId +
+                          "&activityId=" +
+                          that.activityId;
+                        that.dialogVisible = true;
+                        console.log("生成二维码: ", that.qrcodeShow);
+                      }
+                    });
+                    // that.qrcode(that.formId,that.activityId)
+                    // that.dialogVisible = true;
+                  })
+                  .catch(function(err) {
+                    console.log("新增活动返回的错误: ", err);
+                    that.$alert(err, "提示", {
+                      confirmButtonText: "确定"
+                    });
+                  });
+              } else {
+                that.$alert(res.data.data.msg, "提示", {
+                  confirmButtonText: "确定"
+                });
+              }
+            })
+            .catch(function(err) {
+              console.log("fname: ", Fname);
+              console.log("新增表单返回的错误: ", err);
+            });
+        } else {
+          console.log("error submit!!");
+          that.activeNames = ["1"];
+          return false;
+        }
+      });
+    },
     //删除item
     itemComDelete(radioCom, index) {
       console.log("index: ", index);
@@ -1437,6 +1906,11 @@ export default {
         this.formBG.bgImgUrl = res.data.result;
         this.sendFormBG();
       }
+    },
+    //移除背景图片
+    removeBGFile(file, fileList) {
+      this.formBG.bgImgUrl = "";
+      this.sendFormBG();
     },
     //上传表单标题设计
     changeTitleFile(file, fileList) {
@@ -1479,6 +1953,12 @@ export default {
         };
       }
     },
+    //移除表单标题设计
+    removeTitleFile(file, fileList) {
+      (this.formTitle.content = ""),
+        (this.formTitle.type = "text"),
+        this.sendFormTitle();
+    },
     //上传表单描述设计
     changeDescFile(file, fileList) {
       console.log(file);
@@ -1518,6 +1998,60 @@ export default {
           this.sendFormDesc();
         };
       }
+    },
+    //移除表单标题设计
+    removeDescFile(file, fileList) {
+      (this.formDesc.content = ""),
+        (this.formDesc.type = "text"),
+        this.sendFormDesc();
+    },
+    //上传表单图片
+    changeFormFile(file, fileList) {
+      console.log(file);
+      console.log(name);
+      var that = this;
+      //this.imageUrl = URL.createObjectURL(file.raw);
+      var reader = new FileReader();
+      reader.readAsDataURL(file.raw);
+      reader.onload = function(e) {
+        // console.log("this-result: ", this.result); // 这个就是base64编码了
+        that.uploadData.img = this.result;
+        that.uploadData.directory = "formDescImg";
+        that.$refs.uploadForm.submit();
+      };
+    },
+    //上传表单图片成功之后返回显示图片
+    successFormFile(res, file, fileList) {
+      console.log("res", res);
+      if (res.data.status == 100) {
+        var img = new Image();
+        img.src = res.data.result;
+        img.onload = () => {
+          console.log("img.width: ", img.width);
+          console.log("img.height: ", img.height);
+          this.formContent.content = res.data.result;
+          this.sendFormContent();
+        };
+      }
+    },
+    //移除表单标题设计
+    removeFormFile(file, fileList) {
+      this.formContent.type = "img";
+      this.formContent.content = "";
+      this.sendFormContent();
+    },
+    // //二维码生成函数
+    // qrcode(formId,activityId){
+    //   let qrcoe = new QRCode('qrcode', {
+    //     width: 200,
+    //     height: 200,
+    //     text: 'http://192.168.8.200:8080/form?formId='+formId+"&activityId="+activityId
+    //   })
+    // },
+    //关闭dialog
+    closeDialog() {
+      console.log("afdajdlj");
+      this.$router.push({ name: "index" });
     }
   },
   mounted() {
@@ -1559,6 +2093,40 @@ export default {
       // }
     });
     Bus.$on("getActive", msg => (this.activeNames = "" + msg));
+  },
+  beforeMount() {
+    console.log("formdata: ", this.$props.changeFormData);
+    if (this.$props.changeFormData) {
+      this.addBtnShow = false;
+      var formData = JSON.parse(this.$props.changeFormData);
+      this.activityInfo = {
+        activityName: formData.Fname,
+        startTime: formData.FstartTime,
+        endTime: formData.FendTime,
+        posterDesignStatus: formData.FposterSts == -1 ? false : true
+      };
+      this.activityId = formData._id.$id;
+      this.formId = formData.FformId;
+      this.$http
+        .get("/apis/common/one.json?type=form&id=" + formData.FformId)
+        .then(res => {
+          console.log(res);
+          var FformStyle = res.data.data.result.FformStyle;
+          this.formBG = FformStyle.formBG;
+          this.formTitle = FformStyle.formTitle;
+          this.formDesc = FformStyle.formDesc;
+          this.formComponent = FformStyle.formContent;
+          this.componentContent = FformStyle.componentContent;
+          this.sendFormBG();
+          this.sendFormTitle();
+          this.sendFormDesc();
+          this.sendFormContent();
+          this.sendComponentContent();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   }
 };
 </script>

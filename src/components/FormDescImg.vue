@@ -71,7 +71,7 @@ export default {
   },
   mounted() {
     var that = this;
-    console.log("test: ", this.formDescImg);
+    // console.log("test: ", this.formDescImg);
   }
 };
 </script>

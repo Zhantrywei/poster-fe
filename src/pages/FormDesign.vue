@@ -10,7 +10,7 @@
       </div>
     </div>
     <div class="right">
-      <form-tools-bar></form-tools-bar>
+      <form-tools-bar :change-form-data="msg"></form-tools-bar>
     </div>
   </div>
 </template>
@@ -77,14 +77,27 @@
 <script>
 import FormPreview from "../components/FormPreview";
 import FormToolsBar from "../components/FormToolsbar";
+import Bus from '../assets/js/bus'
 export default {
     data() {
-        return {};
+        return {
+          msg: ""
+        };
     },
     components: {
         FormPreview,
         FormToolsBar
     },
-    methods: {}
+    methods: {},
+    beforeMount(){
+      console.log("进入表单设计")
+      console.log(this.$route.params.row);
+      if(this.$route.params.row){
+        var msg = this.$route.params.row;
+        console.log("msg: ",msg);
+        this.msg = msg;
+        // Bus.$emit("sendRow", msg);
+      }
+    }
 };
 </script>

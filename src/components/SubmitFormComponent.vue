@@ -1,7 +1,7 @@
 <template>
-  <div class="submitComponent" @dblclick="editComponent(comData.index)">
+  <div class="submitComponent">
     <!-- <el-button type="primary" :style="{width: comData.width, height: comData.height}">{{comData.label}}</el-button> -->
-    <button class="el-button el-button--primary" :style="{width: comData.width + 'px', height: comData.height + 'px'}">{{comData.label}}</button>
+    <button @click="submit" class="el-button el-button--primary" :style="{width: comData.width + 'px', height: comData.height + 'px'}">{{comData.label}}</button>
   </div>
 
 </template>
@@ -32,6 +32,10 @@ export default {
       this.isActive = true;
       var msg = 6;
       Bus.$emit("getActive", msg);
+    },
+    submit(e){
+      e.preventDefault();
+      Bus.$emit("submitFormData");
     }
   },
   mounted() {}

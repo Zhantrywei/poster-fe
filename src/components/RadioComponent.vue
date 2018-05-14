@@ -5,7 +5,7 @@
     
       <label :for="comData.id"  v-text="comData.label" v-show="comData.label" :style="{width: comData.labelWidth + 'px'}" style="text-align: center"></label>
     <div class="content" v-for="(item,index) in comData.values" :key="index">
-      <input :type="comData.type" :name="comData.id" :class="{radioClass: comData.type=='radio', checkboxClass: comData.type=='checkbox', checkClass: comData.value == item.value}" :checked="comData.value == item.value" :value="item.value" :style="{height: comData.inputHeight+'px'}">{{item.text}}
+      <input :type="comData.type" :name="comData.id" :class="{radioClass: comData.type=='radio', checkboxClass: comData.type=='checkbox', checkClass: comData.value == item.value}" :checked="comData.value == item.value" :value="item.value" :style="{height: comData.inputHeight+'px'}" @click="blurInput">{{item.text}}
     <!-- <textarea :id="comData.id" :model="comData.id" :value="comData.value" :placeholder="comData.placeholder" :style="{borderRadius: comData.borderRadius+'px',width: 'calc( 100% - '+comData.labelWidth+'px )',backgroundColor: comData.backgroundColor,height: comData.inputHeight+'px'}"></textarea> -->
     </div>
   </div>
@@ -131,6 +131,35 @@ export default {
       this.isActive = true;
       var msg = 6;
       Bus.$emit("getActive", msg);
+    },
+    blurInput(e) {
+      console.log(e);
+      if (e.target.type == "radio") {
+        var id = e.target.name;
+        var value = e.target.value;
+        var msg = {
+          id: id,
+          value: value,
+          type: 'radio'
+        };
+        Bus.$emit("getFormData", JSON.stringify(msg));
+      }else if(e.target.type == 'checkbox'){
+        var id = e.target.name;
+        var checked = e.target.checked;
+        var value = e.target.value;
+        if(checked){
+          //如果为true,即失焦的对象应该加入value中
+        }else{
+          //如果为false,即失焦的对象应该删除在value中
+        }
+        var msg = {
+          id: id,
+          value: value,
+          type: 'checkbox',
+          checked: checked
+        };
+        Bus.$emit("getFormData", JSON.stringify(msg));
+      }
     }
   },
   mounted() {}

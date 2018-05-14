@@ -1,8 +1,8 @@
 <template>
   <div class="radioComponent" @dblclick="editComponent(comData.index)">
     
-      <label :for="comData.id"  v-text="comData.label" v-show="comData.label" :style="{width: comData.labelWidth + 'px'}"></label>
-    <select :name="comData.id" :id="comData.id">
+      <label :for="comData.id"  v-text="comData.label" v-show="comData.label" :style="{width: comData.labelWidth + 'px'}" style="text-align: center"></label>
+    <select :name="comData.id" :id="comData.id" @change="changeSelect">
       <option v-for="(item,index) in comData.values" :key="index" :value="item.value" >{{item.text}}</option>
     </select>
   </div>
@@ -110,6 +110,17 @@ export default {
       this.isActive = true;
       var msg = 6;
       Bus.$emit("getActive", msg);
+    },
+    changeSelect(e) {
+      console.log(e);
+      var id = e.target.name;
+      var value = e.target.value;
+      var msg = {
+        id: id,
+        value: value,
+        type: 'select'
+      };
+      Bus.$emit("getFormData", JSON.stringify(msg));
     }
   },
   mounted() {}

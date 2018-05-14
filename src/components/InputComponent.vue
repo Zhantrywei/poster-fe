@@ -4,7 +4,7 @@
     <input type="text" :id="componentData.id" :style="{borderRadius: componentData.borderRadius+'px',width: 'calc( 100% - '+componentData.labelWidth+'px )'}"> -->
     <div class="content">
     <label :for="comData.id"  v-text="comData.label" v-show="comData.label" :style="{width: comData.labelWidth + 'px'}" style="text-align:center"></label>
-    <input :type="comData.type" :class="{input: !comData.borderShow}" :id="comData.id" :model="comData.id" :value="comData.value" :placeholder="comData.placeholder" :style="{borderRadius: comData.borderRadius+'px',width: 'calc( 100% - '+comData.labelWidth+'px )',backgroundColor: comData.backgroundColor,height: comData.inputHeight+'px'}">
+    <input :type="comData.type" :class="{input: !comData.borderShow}" :id="comData.id" :model="comData.id" :value="comData.value" :placeholder="comData.placeholder" :style="{borderRadius: comData.borderRadius+'px',width: 'calc( 100% - '+comData.labelWidth+'px )',backgroundColor: comData.backgroundColor,height: comData.inputHeight+'px'}" @blur="blurInput">
     </div>
   </div>
 
@@ -115,6 +115,17 @@ export default {
       var msg = 0;
       Bus.$emit("getActive",msg);
     },
+    blurInput(e){
+      console.log(e);
+      var id = e.target.id;
+      var value = e.target.value;
+      var msg = {
+        id: id,
+        value: value,
+        type: 'input',
+      }
+      Bus.$emit("getFormData",JSON.stringify(msg));
+    }
   },
   mounted() {}
 };
