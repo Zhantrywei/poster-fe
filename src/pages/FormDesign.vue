@@ -46,7 +46,7 @@
     /* width: 80%; */
     width: calc(100% - 500px);
     height: calc(100% - 100px);
-    display: flex;
+    /* display: flex; */
     flex-direction: row;
     justify-content: center;
     align-items: center;
@@ -72,6 +72,7 @@
     background-position: center center;
     overflow-x: hidden;
     overflow-y: auto;
+    margin: auto;
 }
 </style>
 <script>

@@ -4,8 +4,10 @@
       <img src="../assets/img/header-logo.png">
       <h2>海报设计</h2>
     </header>
-    <div class="preview">
-      <div class="phoneview"></div>
+    <div class="preview clearfix">
+      <div class="phoneview" :style="{backgroundImage: 'url('+posterBG.bgImgUrl+')', backgroundColor: posterBG.bgColor}">
+        <div class="qrcode"  @mousedown="moveQrcode" :style="{height: qrCode.height + 'px',width: qrCode.width + 'px',top: qrCode.y + 'px',left: qrCode.x + 'px', transform: 'rotate('+ qrCode.angle + 'deg)'}"></div>
+      </div>
     </div>
     <div class="toolsbar">
       <header>
@@ -31,22 +33,64 @@
           
         </el-collapse-item>
         <el-collapse-item title="海报背景设计" name="2">
-          <div>控制反馈：通过界面样式和交互动效让用户可以清晰的感知自己的操作；</div>
-          <div>页面反馈：操作后，通过页面元素的变化清晰地展现当前状态。</div>
+          <el-form :model="posterBG" label-width="80px">
+          <el-form-item label="背景图片">
+            <el-upload class="upload-demo" action="/apis/common/uploadimg.debug" list-type="picture" :data="uploadData" :limit="1" :auto-upload="false" name="posterBGImg"  :on-change="changeBGFile" ref="uploadBG" :on-success="successBGFile" :on-remove="removeBGFile">
+              <el-button size="small" type="primary">点击上传</el-button>
+              <span style="margin-left: 10px;" slot="tip" class="el-upload__tip">建议上传png文件，且不超过500kb</span>
+            </el-upload>
+          </el-form-item>
+          <el-form-item label="背景颜色" style="margin-bottom: 0px">
+            <el-color-picker v-model="posterBG.bgColor" show-alpha :predefine="predefineColors">
+            </el-color-picker>
+          </el-form-item>
+        </el-form>
         </el-collapse-item>
         <el-collapse-item title="二维码设计" name="3">
-          <div>简化流程：设计简洁直观的操作流程；</div>
-          <div>清晰明确：语言表达清晰且表意明确，让用户快速理解进而作出决策；</div>
-          <div>帮助用户识别：界面简单直白，让用户快速识别而非回忆，减少用户记忆负担。</div>
-        </el-collapse-item>
-        <el-collapse-item title="可控 Controllability" name="4">
-          <div>用户决策：根据场景可给予用户操作建议或安全提示，但不能代替用户进行决策；</div>
-          <div>结果可控：用户可以自由的进行操作，包括撤销、回退和终止当前操作等。</div>
+          <!-- 二维码图片位置、大小 -->
+        <el-form :model="qrCode" label-width="100px"> 
+          <el-form-item label="二维码大小">
+            <div style="margin-top: 40px;">
+              <span style="margin-right: 10px">宽</span>
+              <el-input v-model="qrCode.width" style="width: 50%;" type="number">
+                <template slot="append">px</template>
+              </el-input>
+            </div>
+            <div style="margin-top: 40px;">
+              <span style="margin-right: 10px">高</span>
+              <el-input v-model="qrCode.height" style="width: 50%;" type="number">
+                <template slot="append">px</template>
+              </el-input>
+            </div>
+          </el-form-item>
+          <el-form-item label="二维码位置">
+            <div style="margin-top: 40px;">
+              <span style="margin-right: 10px">左边距 ( x )</span>
+              <el-input v-model="qrCode.x" style="width: 50%;" type="number">
+                <template slot="append">px</template>
+              </el-input>
+            </div>
+            <div style="margin-top: 40px;">
+              <span style="margin-right: 10px">上边距 ( y )</span>
+              <el-input v-model="qrCode.y" style="width: 50%;" type="number">
+                <template slot="append">px</template>
+              </el-input>
+            </div>
+          </el-form-item>
+          <el-form-item label="旋转角度" style="margin-bottom: 0px">
+            <el-slider v-model="qrCode.angle" :min="0" :max="360" >
+            </el-slider>
+          </el-form-item>
+          <el-form-item label="内边距" style="margin-bottom: 0px">
+            <el-input v-model="qrCode.padding" style="width: 50%;" type="number">
+                <template slot="append">px</template>
+              </el-input>
+          </el-form-item>
+        </el-form>
         </el-collapse-item>
       </el-collapse>
-      <el-form ref="form" :model="form" label-width="80px" style="border-top:1px solid #ebeef5;padding-top: 10px">
+      <!-- <el-form ref="form" :model="form" label-width="80px" style="border-top:1px solid #ebeef5;padding-top: 10px">
         <el-form-item label="活动名称">
-          <!-- <el-input v-model="form.name"></el-input> -->
           <span>{{form.Fname}}</span>
         </el-form-item>
         <el-form-item label="活动时间">
@@ -58,12 +102,13 @@
             <span>{{form.FendTime}}</span>
           </el-col>
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">立即创建</el-button>
-          <el-button>取消</el-button>
-        </el-form-item>
-      </el-form>
+      </el-form> -->
     </div>
+    <div class="btn">
+        <button class="savebtn" @click.self="addPoster" v-if="addBtnShow">新增</button>
+        <button class="savebtn" @click.self="savePoster" v-else>保存</button>
+        <button class="resetbtn" @click.self="resetPoster">清空</button>
+      </div>
   </div>
 </template>
 <style>
@@ -97,10 +142,11 @@
   float: left;
   width: calc(100% - 500px);
   height: calc(100% - 100px);
-  display: flex;
+  /* display: flex; */
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  overflow-y: auto;
 }
 .phoneview {
   /* width: 375px; */
@@ -108,6 +154,11 @@
   width: 375px;
   height: 667px;
   background: #ffffff;
+  background-repeat: none;
+  background-position: top center;
+  background-size: cover;
+  margin: auto;
+  overflow: hidden;
 }
 .toolsbar {
   float: right;
@@ -124,6 +175,41 @@
   margin-bottom: 10px;
   width: 100%;
 }
+.btn {
+  position: fixed;
+  top: 120px;
+  right: 520px;
+  /* background-color: steelblue; */
+}
+.btn > button {
+  width: 100px;
+  height: 40px;
+  border-radius: 6px;
+  color: white;
+  outline: none;
+  border: 0px;
+}
+.btn > button:active {
+  position: relative;
+  top: 1px;
+  left: 1px;
+}
+.savebtn {
+  background-color: #81cef2;
+  margin-right: 10px;
+}
+.resetbtn {
+  background-color: #e4001d;
+}
+.qrcode {
+  background-repeat: none;
+  background-position: center center;
+  background-size: cover;
+  background-image: url("../assets/img/1526319209.png");
+  width: 100px;
+  height: 100px;
+  position: relative;
+}
 </style>
 <style>
 .el-collapse-item__header {
@@ -131,7 +217,7 @@
   font-weight: 700;
 }
 .el-form-item {
-    margin-bottom: 0px;
+  margin-bottom: 0px;
 }
 </style>
 <script>
@@ -148,12 +234,127 @@ export default {
         type: [],
         resource: "",
         desc: ""
+      },
+      addBtnShow: true,
+      posterBG: {
+        bgImgUrl: "",
+        bgColor: ""
+      },
+      qrCode: {
+        width: 100,
+        height: 100,
+        x: 0,
+        y: 0,
+        angle: 0,
+        padding: 0
+      },
+      //预定颜色
+      predefineColors: [
+        "#ff4500",
+        "#ff8c00",
+        "#ffd700",
+        "#90ee90",
+        "#00ced1",
+        "#1e90ff",
+        "#c71585",
+        "rgba(255, 69, 0, 0.68)",
+        "rgb(255, 120, 0)",
+        "hsv(51, 100, 98)",
+        "hsva(120, 40, 94, 0.5)",
+        "hsl(181, 100%, 37%)",
+        "hsla(209, 100%, 56%, 0.73)",
+        "#c7158577"
+      ],
+      uploadData: {
+        img: "",
+        directory: ""
       }
     };
   },
   methods: {
-    onSubmit() {
-      console.log("submit!");
+    //设置FormBG背景图片和背景色->单向通信到FormPreview设置背景图片和背景色
+    // sendPosterBG() {
+    //   var msg = JSON.parse(JSON.stringify(this.posterBG));
+    //   Bus.$emit("getPosterBG", msg);
+    // },
+    addPoster() {},
+    savePoster() {},
+    resetPoster() {
+      this.posterBG={
+        bgImgUrl: "",
+        bgColor: ""
+      }
+      this.qrCode= {
+        width: 100,
+        height: 100,
+        x: 0,
+        y: 0,
+        angle: 0,
+        padding: 0
+      }
+    },
+    //上传表单背景设计
+    changeBGFile(file, fileList) {
+      console.log(file);
+      console.log(name);
+      var that = this;
+      //this.imageUrl = URL.createObjectURL(file.raw);
+      var reader = new FileReader();
+      reader.readAsDataURL(file.raw);
+      reader.onload = function(e) {
+        // console.log("this-result: ", this.result); // 这个就是base64编码了
+        that.uploadData.img = this.result;
+        that.uploadData.directory = "posterBGImg";
+        that.$refs.uploadBG.submit();
+      };
+    },
+    //上传表单背景设计成功之后返回显示图片
+    successBGFile(res, file, fileList) {
+      console.log("res", res);
+      if (res.data.status == 100) {
+        this.posterBG.bgImgUrl = res.data.result;
+        // this.sendPosterBG();
+      }
+    },
+    //移除背景图片
+    removeBGFile(file, fileList) {
+      this.posterBG.bgImgUrl = "";
+      // this.sendPosterBG();
+    },
+    moveQrcode(e) {
+      e.preventDefault();
+      console.log("点击进入");
+      var that = this;
+      //先获取初始位置
+      var eClientX = e.clientX;
+      var eClientY = e.clientY;
+      var initX = parseInt(this.qrCode.x);
+      var initY = parseInt(this.qrCode.y);
+      console.log("initX:", this.qrCode.x);
+      console.log("initY:", this.qrCode.y);
+      var target = e.target;
+      var flag = 1;
+      if (flag == 1) {
+        target.onmousemove = function(e) {
+          that.qrCode.x = e.clientX - eClientX + initX;
+          that.qrCode.y = e.clientY - eClientY + initY;
+          target.onmouseup = function() {
+            target.onmousemove = null;
+            target.onmousedown = null;
+            console.log("放开1");
+            console.log("qrCode.x:", that.qrCode.x);
+            console.log("qrCode.y:", that.qrCode.y);
+            // var msg = JSON.parse(JSON.stringify(that.qrCode));
+            // Bus.$emit("sendFormTitle", msg);
+          };
+        };
+        target.onmouseup = function() {
+          target.onmousemove = null;
+          target.onmousedown = null;
+          console.log("放开2");
+        };
+        flag = 0;
+      }
     }
   },
   mounted() {},
@@ -165,8 +366,14 @@ export default {
       var row = JSON.parse(this.$route.query.row);
 
       this.form = row;
-    }else{
-      this.$router.push({ name: "index"})
+      if (row.FposterBgUrl) {
+        this.addBtnShow = false;
+      } else {
+        this.posterBG.bgImgUrl = row.FposterBgUrl;
+        this.qrCode = JSON.parse(row.FposterQrcode);
+      }
+    } else {
+      this.$router.push({ name: "index" });
     }
     console.log("row: ", row);
   }
