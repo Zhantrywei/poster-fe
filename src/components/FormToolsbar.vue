@@ -32,8 +32,7 @@
       <el-collapse-item title="表单背景设计" name="2">
         <el-form :model="formBG" label-width="80px">
           <el-form-item label="背景图片">
-            <!-- <el-upload class="upload-demo" action="/apis/common/uploadimg.debug" list-type="picture" :data="uploadData" :limit="1" name="formBGImg" :before-upload="beforeUpload" :on-preview="previewBanner" :on-change="changeFile"> -->
-            <el-upload class="upload-demo" action="/apis/common/uploadimg.debug" list-type="picture" :data="uploadData" :limit="1" :auto-upload="false" name="formBGImg"  :on-change="changeFile" ref="upload">
+            <el-upload class="upload-demo" action="/apis/common/uploadimg.debug" list-type="picture" :data="uploadData" :limit="1" :auto-upload="false" name="formBGImg"  :on-change="changeBGFile" ref="uploadBG" :on-success="successBGFile">
               <el-button size="small" type="primary">点击上传</el-button>
               <span style="margin-left: 10px;" slot="tip" class="el-upload__tip">建议上传png文件，且不超过500kb</span>
             </el-upload>
@@ -74,7 +73,7 @@
           </el-form-item>
           <!-- 标题为图片 -->
           <el-form-item label="标题图片" v-show="formTitle.type == 'img'">
-            <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :data="uploadData" list-type="picture" :limit="1" name="formTitleImg">
+            <el-upload class="upload-demo" action="/apis/common/uploadimg.debug" :data="uploadData" list-type="picture" :limit="1" :auto-upload="false" :on-change="changeTitleFile" ref="uploadTitle" :on-success="successTitleFile" name="formTitleImg">
               <el-button size="small" type="primary">点击上传</el-button>
               <span style="margin-left: 10px;" slot="tip" class="el-upload__tip">建议上传png文件，且不超过500kb</span>
             </el-upload>
@@ -144,7 +143,7 @@
           </el-form-item>
           <!-- 简述为图片 -->
           <el-form-item label="简述图片" v-show="formDesc.type == 'img'">
-            <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" list-type="picture" :limit="1" name="formDescImg">
+            <el-upload class="upload-demo" action="/apis/common/uploadimg.debug" list-type="picture" :limit="1" :data="uploadData" :auto-upload="false" :on-change="changeDescFile" ref="uploadDesc" :on-success="successDescFile" name="formDescImg">
               <el-button size="small" type="primary">点击上传</el-button>
               <span style="margin-left: 10px;" slot="tip" class="el-upload__tip">建议上传png文件，且不超过500kb</span>
             </el-upload>
@@ -187,7 +186,7 @@
       <el-collapse-item title="表单基础设计" name="5">
         <el-form :model="formContent" label-width="80px">   
           <el-form-item label="表单图片">
-            <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" list-type="picture" :limit="1" name="formContentImg">
+            <el-upload class="upload-demo" action="/apis/common/uploadimg.debug" list-type="picture" :limit="1" :data="uploadData" :auto-upload="false" :on-change="changeFormFile" ref="uploadForm" :on-success="successFormFile" name="formContentImg">
               <el-button size="small" type="primary">点击上传</el-button>
               <span style="margin-left: 10px;" slot="tip" class="el-upload__tip">建议上传png文件，且不超过500kb</span>
             </el-upload>
@@ -1416,26 +1415,8 @@ export default {
       );
       this.sendComponentContent();
     },
-    //图片上传之前
-    // beforeUpload(file) {
-    //    var reader = new FileReader();
-    //   console.log(file.raw);
-    // },
-    //on-preview function
-    // previewBanner(file) {
-    //   console.log(file);
-    //   var that = this;
-    //   //this.imageUrl = URL.createObjectURL(file.raw);
-    //   var reader = new FileReader();
-    //   reader.readAsDataURL(file.raw);
-    //   reader.onload = function(e) {
-    //     console.log("this-result: ", this.result); // 这个就是base64编码了
-    //     that.uploadData.img = this.result;
-    //     // that.uploadData.img =
-    //   };
-    // },
-    // on-change function
-    changeFile(file, fileList) {
+    //上传表单背景设计
+    changeBGFile(file, fileList) {
       console.log(file);
       console.log(name);
       var that = this;
@@ -1445,11 +1426,98 @@ export default {
       reader.onload = function(e) {
         // console.log("this-result: ", this.result); // 这个就是base64编码了
         that.uploadData.img = this.result;
-        that.uploadData.directory = "formBGImg"
-        that.$refs.upload.submit();
-        // that.uploadData.img =
+        that.uploadData.directory = "formBGImg";
+        that.$refs.uploadBG.submit();
       };
-      // this.$http.post('/apis/common/uploadimg.debug')
+    },
+    //上传表单背景设计成功之后返回显示图片
+    successBGFile(res, file, fileList) {
+      console.log("res", res);
+      if (res.data.status == 100) {
+        this.formBG.bgImgUrl = res.data.result;
+        this.sendFormBG();
+      }
+    },
+    //上传表单标题设计
+    changeTitleFile(file, fileList) {
+      console.log(file);
+      console.log(name);
+      var that = this;
+      //this.imageUrl = URL.createObjectURL(file.raw);
+      var reader = new FileReader();
+      reader.readAsDataURL(file.raw);
+      reader.onload = function(e) {
+        // console.log("this-result: ", this.result); // 这个就是base64编码了
+        that.uploadData.img = this.result;
+        that.uploadData.directory = "formTitleImg";
+        that.$refs.uploadTitle.submit();
+      };
+    },
+    //上传表单标题设计成功之后返回显示图片
+    successTitleFile(res, file, fileList) {
+      console.log("res", res);
+      if (res.data.status == 100) {
+        var img = new Image();
+        img.src = res.data.result;
+        img.onload = () => {
+          console.log("img.width: ", img.width);
+          console.log("img.height: ", img.height);
+          this.formTitle = {
+            //文本标题
+            type: "img",
+            content: res.data.result,
+            fontFamily: null,
+            fontSize: null,
+            fontColor: null,
+            width: 100,
+            height: 100 * img.height / img.width,
+            x: 65,
+            y: 4,
+            angle: 0
+          };
+          this.sendFormTitle();
+        };
+      }
+    },
+    //上传表单描述设计
+    changeDescFile(file, fileList) {
+      console.log(file);
+      console.log(name);
+      var that = this;
+      //this.imageUrl = URL.createObjectURL(file.raw);
+      var reader = new FileReader();
+      reader.readAsDataURL(file.raw);
+      reader.onload = function(e) {
+        // console.log("this-result: ", this.result); // 这个就是base64编码了
+        that.uploadData.img = this.result;
+        that.uploadData.directory = "formDescImg";
+        that.$refs.uploadDesc.submit();
+      };
+    },
+    //上传表单描述设计成功之后返回显示图片
+    successDescFile(res, file, fileList) {
+      console.log("res", res);
+      if (res.data.status == 100) {
+        var img = new Image();
+        img.src = res.data.result;
+        img.onload = () => {
+          console.log("img.width: ", img.width);
+          console.log("img.height: ", img.height);
+          this.formDesc = {
+            type: "img",
+            content: res.data.result,
+            fontFamily: null,
+            fontSize: null,
+            fontColor: null,
+            width: 100,
+            height: 100 * img.height / img.width,
+            x: 65,
+            y: 4,
+            angle: 0
+          };
+          this.sendFormDesc();
+        };
+      }
     }
   },
   mounted() {

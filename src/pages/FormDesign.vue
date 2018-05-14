@@ -50,6 +50,7 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    overflow-y: auto;
 }
 .right {
     float: right;
@@ -61,10 +62,9 @@
 }
 .main {
     width: 375px;
-    /* height: 812px; */
-    /* width: 24.6323%; */
-    /* height: 88.7249%; */
     height: 667px;
+    /* width: 187.5px;
+    height: 333.5px; */
     background: #ffffff;
     /* background-image: url('https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo_top_ca79a146.png'); */
     background-repeat: no-repeat;
