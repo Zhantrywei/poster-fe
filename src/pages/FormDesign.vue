@@ -46,17 +46,18 @@
     /* width: 80%; */
     width: calc(100% - 500px);
     height: calc(100% - 100px);
-    /* display: flex; */
+    display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     overflow-y: auto;
+    /* padding-top: 100px; */
 }
 .right {
     float: right;
     width: 500px;
     height: calc(100% - 100px);
-    overflow-x: hidden;
+    /* overflow-x: hidden; */
     overflow-y: auto;
     background: #ffffff;
 }

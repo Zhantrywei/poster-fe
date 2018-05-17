@@ -105,7 +105,7 @@
       </el-form> -->
     </div>
     <div class="btn">
-        <button class="savebtn" @click.self="addPoster" v-if="addBtnShow">新增</button>
+        <button class="savebtn" @click.self="savePoster" v-if="addBtnShow">新增</button>
         <button class="savebtn" @click.self="savePoster" v-else>保存</button>
         <button class="resetbtn" @click.self="resetPoster">清空</button>
       </div>
@@ -268,7 +268,9 @@ export default {
       uploadData: {
         img: "",
         directory: ""
-      }
+      },
+      activityId: "",
+      formId: ""
     };
   },
   methods: {
@@ -278,7 +280,26 @@ export default {
     //   Bus.$emit("getPosterBG", msg);
     // },
     addPoster() {},
-    savePoster() {},
+    savePoster() {
+      let formData = new FormData();
+        formData.append("poster_url", "");
+        formData.append("poster_bg_img", JSON.stringify(this.posterBG));
+        formData.append("poster_qrcode", JSON.stringify(this.qrCode));
+        formData.append("poster_tips_txt", JSON.stringify(this.qrCode));
+      this.$http.post('/apis/activity/design.json',formData, {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          }).then(res=>{
+            if(res.data.data.status == 100){
+              this.$alert("海报设计成功!","提示",{
+                confirmButtonText: "确定",
+              })
+            }
+          }).catch(err=>{
+
+          })
+    },
     resetPoster() {
       this.posterBG={
         bgImgUrl: "",
@@ -364,8 +385,17 @@ export default {
     // this.$route.params.id;
     if (this.$route.query.row) {
       var row = JSON.parse(this.$route.query.row);
-
+      console.log(row)
       this.form = row;
+      this.formId = row.FformId;
+      this.activityId = row._id.$id;
+      this.$http.get("/apis/common/one.json?type=activity&id="+this.activityId).then(res=>{
+        if(res.data.data.status == 100){
+          console.log(res)
+        }
+      }).catch(err=>{
+
+      })
       if (row.FposterBgUrl) {
         this.addBtnShow = false;
       } else {
@@ -375,7 +405,8 @@ export default {
     } else {
       this.$router.push({ name: "index" });
     }
-    console.log("row: ", row);
+    // console.log("row: ", row);
+
   }
 };
 </script>

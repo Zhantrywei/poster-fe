@@ -28,7 +28,7 @@
           </el-table-column>
           <el-table-column label="海报状态" align="center" :formatter="formatterPOSta">
           </el-table-column>
-          <el-table-column label="操作" align="center" width="438px">
+          <el-table-column label="操作" align="center">
             <el-table-column label="报名表单" align="center">
               <template slot-scope="scope">
                 <el-button size="mini" v-if="scope.row.Fstatus == 0" @click="changeForm(scope.row)">修改</el-button>

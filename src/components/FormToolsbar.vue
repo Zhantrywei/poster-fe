@@ -820,7 +820,7 @@ export default {
         value: "",
         placeholder: "请输入内容",
         borderRadius: 4,
-        labelWidth: 50,
+        labelWidth: 80,
         backgroundColor: "",
         inputHeight: 30,
         borderShow: true
@@ -835,7 +835,7 @@ export default {
         type: "radio",
         // values: [{ value: "boy", text: "男" }, { value: "girl", text: "女" }],
         values: [],
-        labelWidth: 50,
+        labelWidth: 80,
         // backgroundColor: "#0F5BAA",
         inputHeight: 30
       },
@@ -868,7 +868,7 @@ export default {
         label: "",
         value: "",
         type: "upload",
-        labelWidth: 50
+        labelWidth: 80
       },
       submitShow: false,
       uploadData: {
@@ -999,7 +999,7 @@ export default {
           placeholder:
             this.formComponent.type == "password" ? "请输入密码" : "请输入内容",
           borderRadius: 4,
-          labelWidth: 50,
+          labelWidth: 80,
           backgroundColor: "",
           inputHeight: 30,
           borderShow: false
@@ -1023,7 +1023,7 @@ export default {
           type: this.formComponent.type,
           label: this.formComponent.label,
           value: "",
-          labelWidth: 50,
+          labelWidth: 80,
           backgroundColor: "",
           inputHeight: 30,
           values: []
@@ -1043,7 +1043,7 @@ export default {
           type: this.formComponent.type,
           label: this.formComponent.label,
           value: "点击上传",
-          labelWidth: 50,
+          labelWidth: 80,
           backgroundColor: "",
           inputHeight: 30,
           placeholder: "只能上传jpg/png文件，且不超过500kb"
@@ -1115,7 +1115,7 @@ export default {
           value: "",
           placeholder: "请输入内容",
           borderRadius: 4,
-          labelWidth: 50,
+          labelWidth: 80,
           backgroundColor: "#0F5BAA",
           inputHeight: 30
         };
@@ -1222,7 +1222,7 @@ export default {
           value: "",
           type: "radio",
           values: [],
-          labelWidth: 50,
+          labelWidth: 80,
           backgroundColor: "#0F5BAA",
           inputHeight: 30
         };
@@ -1328,7 +1328,7 @@ export default {
           value: "",
           placeholder: "请输入内容",
           borderRadius: 4,
-          labelWidth: 50,
+          labelWidth: 80,
           backgroundColor: "#0F5BAA",
           inputHeight: 30
         };
@@ -1416,7 +1416,7 @@ export default {
           value: "",
           placeholder: "请输入内容",
           borderRadius: 4,
-          labelWidth: 50,
+          labelWidth: 80,
           backgroundColor: "#0F5BAA",
           inputHeight: 30
         };
@@ -1691,7 +1691,7 @@ export default {
           value: "",
           placeholder: "请输入内容",
           borderRadius: 4,
-          labelWidth: 50,
+          labelWidth: 80,
           backgroundColor: "",
           inputHeight: 30,
           borderShow: true
@@ -1706,7 +1706,7 @@ export default {
         type: "radio",
         // values: [{ value: "boy", text: "男" }, { value: "girl", text: "女" }],
         values: [],
-        labelWidth: 50,
+        labelWidth: 80,
         // backgroundColor: "#0F5BAA",
         inputHeight: 30
       };
@@ -1722,7 +1722,7 @@ export default {
           label: "",
           value: "",
           type: "upload",
-          labelWidth: 50
+          labelWidth: 80
         });
       (this.submitShow = false),
         (this.uploadData = {
